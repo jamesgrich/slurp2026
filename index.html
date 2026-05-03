@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slurp! 2026 — Duration Brewing</title>
+<style>
+  :root {
+    --bg: #0e1710;
+    --surface: #141f15;
+    --card: #1c2c1e;
+    --card2: #222f24;
+    --border: #2c3f2e;
+    --border2: #384f3a;
+    --green: #52c97a;
+    --amber: #e8a23a;
+    --text: #f0f7f1;
+    --sub: #7aaa80;
+    --muted: #4a6b4e;
+    --tried: #52c97a;
+    --cask: #c084fc;
+    --wild: #38bdf8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: linear-gradient(160deg, #0e1710 60%, #1a3020);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .header-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .header-stats {
+    font-size: 0.72rem;
+    color: var(--sub);
+    white-space: nowrap;
+  }
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-top: 8px;
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--sub);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 8px 4px 10px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+  .tab-btn .badge {
+    background: var(--green);
+    color: #0e1710;
+    font-size: 0.65rem;
+    font-weight: 800;
+    border-radius: 8px;
+    padding: 1px 5px;
+    min-width: 18px;
+    text-align: center;
+    display: inline-block;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .tab-panel { display: none; padding: 12px 0 80px; }
+  .tab-panel.active { display: block; }
+
+  /* ── SEARCH + FILTERS ── */
+  .search-wrap {
+    padding: 0 12px 8px;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--green); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    padding: 0 12px 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--sub);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 5px 11px;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .chip.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #0e1710;
+  }
+
+  /* ── BREWERY GROUP ── */
+  .brewery-group { margin-bottom: 6px; }
+  .brewery-header {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 7px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  /* ── BEER CARD ── */
+  .beer-card {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 11px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: background 0.12s;
+  }
+  .beer-card:hover { background: var(--card2); }
+  .beer-card.on-list { border-left: 3px solid var(--green); }
+  .beer-card.tried-card { border-left: 3px solid var(--tried); opacity: 0.75; }
+  .beer-info { flex: 1; min-width: 0; }
+  .beer-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .beer-sub {
+    font-size: 0.78rem;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+  .beer-sub .abv { color: var(--green); font-weight: 600; }
+  .beer-adj {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .beer-collab {
+    font-size: 0.72rem;
+    color: var(--amber);
+    margin-top: 2px;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .pill {
+    font-size: 0.65rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 2px 7px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .pill-bar {
+    border-color: var(--border2);
+    color: var(--muted);
+  }
+  .pill-gf  { background: rgba(82,201,122,0.12); color: var(--green); border-color: rgba(82,201,122,0.25); }
+  .pill-af  { background: rgba(232,162,58,0.12); color: var(--amber); border-color: rgba(232,162,58,0.25); }
+  .pill-cask{ background: rgba(192,132,252,0.12); color: var(--cask); border-color: rgba(192,132,252,0.25); }
+  .pill-wild{ background: rgba(56,189,248,0.12); color: var(--wild); border-color: rgba(56,189,248,0.25); }
+  .pill-nolow{ background: rgba(232,162,58,0.10); color: var(--amber); border-color: rgba(232,162,58,0.2); }
+  .pill-tbc { background: rgba(240,247,241,0.08); color: var(--sub); border-color: var(--border2); }
+  .pill-collab { background: rgba(232,162,58,0.10); color: var(--amber); border-color: rgba(232,162,58,0.2); }
+
+  .add-btn {
+    background: var(--green);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    color: #0e1710;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: opacity 0.12s, transform 0.1s;
+    margin-top: 2px;
+  }
+  .add-btn:active { transform: scale(0.9); }
+  .add-btn:disabled {
+    background: var(--muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .add-btn.on-list {
+    background: var(--card2);
+    border: 2px solid var(--green);
+    color: var(--green);
+    font-size: 0.9rem;
+  }
+
+  /* ── WHAT'S ON ── */
+  .whats-on-section {
+    margin-bottom: 2px;
+  }
+  .section-header {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 9px 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .section-header .section-icon { font-size: 1.05rem; }
+  .wo-item {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.86rem;
+    color: var(--text);
+    background: var(--card);
+  }
+  .wo-item:last-child { border-bottom: none; }
+
+  /* ── MY LIST ── */
+  .empty-list {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+  }
+  .empty-list .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty-list p { font-size: 0.9rem; line-height: 1.5; }
+
+  .list-card {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px;
+  }
+  .list-card.tried-card {
+    border-left: 3px solid var(--tried);
+    opacity: 0.8;
+  }
+  .list-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .list-card-title { flex: 1; min-width: 0; }
+  .list-brewery {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .list-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .list-sub {
+    font-size: 0.78rem;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+  .list-sub .abv { color: var(--green); font-weight: 600; }
+  .list-actions {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .tried-btn {
+    background: none;
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+  .tried-btn:hover { background: rgba(82,201,122,0.1); }
+  .tried-btn.active {
+    background: var(--tried);
+    color: #0e1710;
+    border-color: var(--tried);
+  }
+  .remove-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 9px;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .remove-btn:hover { border-color: #e05b5b; color: #e05b5b; }
+
+  /* Star ratings */
+  .ratings-wrap { margin-top: 10px; }
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .rating-label {
+    font-size: 0.7rem;
+    color: var(--sub);
+    width: 72px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--border2);
+    transition: color 0.1s, transform 0.1s;
+    line-height: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .star:active { transform: scale(1.3); }
+  .star.filled { color: var(--amber); }
+
+  /* Tasting notes */
+  .notes-wrap { margin-top: 8px; }
+  .notes-textarea {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.82rem;
+    padding: 8px 10px;
+    resize: vertical;
+    min-height: 56px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .notes-textarea:focus { border-color: var(--green); }
+  .notes-textarea::placeholder { color: var(--muted); }
+
+  .untappd-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    color: var(--amber);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.12s;
+  }
+  .untappd-link:hover { opacity: 1; }
+
+  /* ── TOAST ── */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 9px 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: toast-in 0.2s ease, toast-out 0.3s ease 2s forwards;
+    white-space: nowrap;
+  }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.info    { border-color: var(--amber); color: var(--amber); }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes toast-out {
+    from { opacity: 1; }
+    to   { opacity: 0; transform: translateY(-6px); }
+  }
+
+  /* ── MISC ── */
+  .no-results {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  @media (max-width: 360px) {
+    .header-title { font-size: 1.2rem; }
+    .tab-btn { font-size: 0.74rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-top">
+    <span class="header-title">🌿 Slurp! 2026</span>
+    <span class="header-stats" id="header-stats"></span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="beers">Beers</button>
+    <button class="tab-btn" data-tab="whatson">Other Drinks / Merch</button>
+    <button class="tab-btn" data-tab="mylist">My List <span class="badge" id="list-badge" style="display:none">0</span></button>
+  </div>
+</header>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════ TAB: BEERS ═══════════════ -->
+<div class="tab-panel active" id="panel-beers">
+  <div class="search-wrap" style="padding-top:10px">
+    <input type="search" class="search-input" id="search-input" placeholder="Search beers, breweries, styles…" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <!-- Bar filter -->
+  <div class="filter-row" id="bar-filters"></div>
+  <!-- Style filter -->
+  <div class="filter-row" id="style-filters"></div>
+  <!-- Beer list -->
+  <div id="beer-list"></div>
+</div>
+
+<!-- ═══════════════ TAB: WHAT'S ON ═══════════════ -->
+<div class="tab-panel" id="panel-whatson">
+  <div id="whatson-content"></div>
+</div>
+
+<!-- ═══════════════ TAB: MY LIST ═══════════════ -->
+<div class="tab-panel" id="panel-mylist">
+  <div id="mylist-content"></div>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+
+const BEERS = [
+  // BOOM BAR — Duration lines 1–5
+  {id:1,  b:'Duration',         n:'Truck',                                    s:'New England IPA',             abv:6.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:2,  b:'Duration',         n:'Deep Fried',                               s:'IPA',                         abv:6.2,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:3,  b:'Duration',         n:'Dripping Pitch',                           s:'West Coast IPA',              abv:6.7,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:4,  b:'Duration',         n:'Camberwell',                               s:'Pale Ale',                    abv:4.8,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:5,  b:'Duration',         n:'Strataberry Fields',                       s:'Fruited Ale',                 abv:4.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:'Strawberry, Raspberry, Lemon'},
+  {id:6,  b:'Duration',         n:'Fold + Fly',                               s:'Foeder Aged Lager / Sour',    abv:5.1,  bars:['Boom Bar'],                                  t:['wild'],        co:'Balance Brewing + Blending',  adj:null},
+  {id:7,  b:'Duration',         n:'Shine #2 Krush',                           s:'Krush Hopped Pale',           abv:4.8,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:8,  b:'Duration',         n:'Shine #1 Simcoe',                          s:'Simcoe Hopped Pale',          abv:4.9,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:9,  b:'Duration',         n:'Sorbetto',                                 s:'Raspberry Gose',              abv:4.4,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:'Raspberry, Lemon'},
+  {id:10, b:'Duration',         n:'Doses',                                    s:'German Pilsner',              abv:5.1,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  // BOOM BAR — Guest breweries
+  {id:11, b:'Ampersand',        n:'Affogato',                                 s:'Dark Ale',                    abv:8.0,  bars:['Boom Bar'],                                  t:[],              co:'Strangers Coffee',            adj:'Coffee, Vanilla'},
+  {id:12, b:'Ampersand',        n:'Rhubarb Crumble',                          s:'Sour',                        abv:5.6,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:'Rhubarb'},
+  {id:13, b:'Baron',            n:'On The Green',                             s:'Double IPA',                  abv:8.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:14, b:'Baron',            n:'Geoff',                                    s:'Hazy Pale',                   abv:4.0,  bars:['Boom Bar'],                                  t:['gf'],          co:null,                          adj:null},
+  {id:15, b:'Beak',             n:'Déšť',                                     s:'Czech Pils',                  abv:5.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:16, b:'Beak',             n:'Sunrise',                                  s:'IPA',                         abv:6.5,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:17, b:'Burnt Mill',       n:'Glow',                                     s:'Lemon Radler',                abv:2.0,  bars:['Boom Bar'],                                  t:['gf','nolow'],  co:null,                          adj:'Lemon'},
+  {id:18, b:'Burnt Mill',       n:'Pacific Rise',                             s:'West Coast IPA',              abv:7.0,  bars:['Boom Bar'],                                  t:['gf'],          co:'Time + Tide',                 adj:null},
+  {id:19, b:'Burnt Mill',       n:'Citra Fog Fresh',                          s:'Hazy IPA',                    abv:6.0,  bars:['Boom Bar'],                                  t:['gf'],          co:null,                          adj:null},
+  {id:20, b:'Cloudwater',       n:'Nexus',                                    s:'IPA',                         abv:6.5,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:21, b:'Cloudwater',       n:'Infamous Fable',                           s:'Pale Ale',                    abv:4.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:22, b:'DEYA',             n:'Into The Ever Haze',                       s:'IPA',                         abv:7.0,  bars:['Boom Bar'],                                  t:[],              co:'Tripping Animals',            adj:null},
+  {id:23, b:'DEYA',             n:'Steady Rolling Man',                       s:'Pale Ale',                    abv:5.2,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:24, b:'Kernel',           n:'Running Porter',                           s:'Porter',                      abv:5.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:25, b:'Kernel',           n:'Biere De Damson',                          s:'Wild Sour',                   abv:5.8,  bars:['Boom Bar'],                                  t:['wild'],        co:null,                          adj:'Damson'},
+  {id:26, b:'Pastore',          n:'Peach + Apricot Berliner Weisse',          s:'Berliner Weisse',             abv:3.8,  bars:['Boom Bar'],                                  t:['wild'],        co:null,                          adj:'Peach, Apricot'},
+  {id:27, b:'Pastore',          n:'White Grape Table Beer',                   s:'Table Pale / Sour',           abv:4.0,  bars:['Boom Bar'],                                  t:['nolow'],       co:null,                          adj:'Grape'},
+  {id:28, b:'Pomona Island',    n:'Clarky Cat',                               s:'Double Dry Hopped Pale',      abv:5.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:29, b:'Pomona Island',    n:'Factotum',                                 s:'Pale Ale',                    abv:4.0,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:30, b:"Polly's Brew Co",  n:'Pine',                                     s:'Pale Ale',                    abv:5.0,  bars:['Boom Bar'],                                  t:['gf'],          co:null,                          adj:null},
+  {id:31, b:"Polly's Brew Co",  n:'Rocking Chairs',                           s:'West Coast Pale',             abv:4.3,  bars:['Boom Bar'],                                  t:[],              co:'Duration',                    adj:null},
+  {id:32, b:'Pressure Drop',    n:'Gradients',                                s:'Hazy Pale',                   abv:4.6,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:33, b:'Pressure Drop',    n:'Pale Fire',                                s:'Pale Ale',                    abv:4.8,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:35, b:'Track',            n:'Capacitor',                                s:'Double IPA',                  abv:8.0,  bars:['Boom Bar'],                                  t:[],              co:'Superflux',                   adj:null},
+  {id:36, b:'Track',            n:'From Above',                               s:'Pale Ale',                    abv:4.1,  bars:['Boom Bar'],                                  t:['gf'],          co:null,                          adj:null},
+  {id:37, b:'Two Flints',       n:'Still Returning',                          s:'Double Dry Hopped IPA',       abv:7.0,  bars:['Boom Bar'],                                  t:[],              co:'Track',                       adj:null},
+  {id:38, b:'Two Flints',       n:'Santiago',                                 s:'Pale Ale',                    abv:3.8,  bars:['Boom Bar'],                                  t:['gf'],          co:null,                          adj:null},
+  {id:39, b:'Verdant',          n:'300 Laps of Your Garden',                  s:'Pale Ale',                    abv:4.9,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  {id:40, b:'Verdant',          n:'Vanity Metrics',                           s:'Pale Ale',                    abv:4.8,  bars:['Boom Bar'],                                  t:[],              co:null,                          adj:null},
+  // TAPROOM + FARMERS BAR — Duration
+  {id:41, b:'Duration',         n:'Turtles All The Way Down',                 s:'IPA',                         abv:5.5,  bars:['Taproom Bar','Farmers Bar'],                 t:[],              co:null,                          adj:null},
+  {id:42, b:'Duration',         n:'Good Times',                               s:'American Light Lager',        abv:4.2,  bars:['Taproom Bar','Farmers Bar'],                 t:['gf'],          co:null,                          adj:null},
+  {id:43, b:'Duration',         n:'Adventure Defender',                       s:'Session IPA',                 abv:4.5,  bars:['Taproom Bar','Farmers Bar','Cocktail + Wine Bar'], t:[],        co:null,                          adj:null},
+  {id:44, b:'Duration',         n:'Slurp!',                                   s:'Table Pale',                  abv:3.0,  bars:['Taproom Bar','Farmers Bar'],                 t:['nolow'],       co:null,                          adj:null},
+  {id:45, b:'Duration',         n:'Snapshot',                                 s:'Session IPA',                 abv:4.5,  bars:['Taproom Bar'],                               t:[],              co:null,                          adj:null},
+  {id:46, b:'Duration',         n:'Bonsai 2026',                              s:'Pale Ale',                    abv:4.8,  bars:['Taproom Bar','Farmers Bar'],                 t:[],              co:null,                          adj:null},
+  {id:47, b:'Duration',         n:'Ebb + Flow',                               s:'American Stout',              abv:4.8,  bars:['Taproom Bar','Farmers Bar'],                 t:[],              co:null,                          adj:null},
+  {id:48, b:'Duration',         n:'Sweeping Coast',                           s:'West Coast Pale',             abv:4.8,  bars:['Taproom Bar'],                               t:[],              co:null,                          adj:null},
+  // FARMERS BAR — cask + extras
+  {id:49, b:'Duration',         n:'Trampoline',                               s:'Cask Pale',                   abv:4.4,  bars:['Farmers Bar'],                               t:['cask'],        co:null,                          adj:null},
+  {id:50, b:'Duration',         n:'Charm',                                    s:'Cask Dark Mild',              abv:3.4,  bars:['Farmers Bar'],                               t:['cask'],        co:null,                          adj:null},
+  {id:51, b:'Cloudwater',       n:'Fresh AF',                                 s:'AF IPA',                      abv:0.5,  bars:['Farmers Bar'],                               t:['af','nolow'],  co:null,                          adj:null},
+  {id:52, b:'Downham Cider',    n:'Tickle Apple Cider',                       s:'Cider',                       abv:4.0,  bars:['Farmers Bar'],                               t:['gf'],          co:null,                          adj:null},
+  {id:53, b:'All Day Brewery',  n:"Let's Cask",                               s:'Cask Golden Bitter',          abv:4.4,  bars:['Farmers Bar'],                               t:['cask'],        co:null,                          adj:null},
+  {id:54, b:'Fenland Brewery',  n:'Strata',                                   s:'Cask IPA',                    abv:6.0,  bars:['Farmers Bar'],                               t:['cask'],        co:null,                          adj:null},
+  // COCKTAIL + WINE BAR
+  {id:55, b:'Duration',         n:'Cuttin Grass',                             s:'Italian Pilsner',             abv:4.5,  bars:['Cocktail + Wine Bar'],                        t:[],              co:null,                          adj:null},
+];
+
+const WHATS_ON = {
+  cocktails: [
+    'Ameretto Sour','Aperol Spritz','Bana Rum Punch','Bloody Mary',
+    'Espresso Martini','Ginger Jack','Hugo Spritz','Lynchburg Lemonade',
+    'Mimosa','Spicy Margherita','Smoke + Barrel Spirit + Mixer',
+  ],
+  wines: [
+    'Prosecco 200ml',
+    'Red Wine 175ml or 250ml','Rosé 175ml or 250ml','White Wine 175ml or 250ml',
+  ],
+  ciders: ['Ascension Cider 440ml'],
+  afBeers: [
+    'Burnt Mill Citra + Mosaic AF West Coast Pale 440ml',
+    'Cloudwater Fresh AF IPA 440ml',
+    'Guinness Zero AF Stout 440ml',
+  ],
+  softDrinks: [
+    'Chocolate Milk 200ml','Drove Orchard Apple Juice 330ml','Fruit Smoothalicious',
+    'Gingerella 200ml','Highland Spring Water 500ml','Karma Kola 200ml',
+    'Lemony 200ml','Lime + Cucumber Soda 300ml','Norfolk Blueberry Juicy 330ml',
+    'Razza Lemonade 200ml','San Pellegrino Sparkling Water 500ml',
+    'Smoke + Barrel Mocktails','Strawberry Milk 200ml','Traditional Lemonade 330ml',
+    'Blueberry + Lilac Cooler',
+  ],
+  iceCream: ["Dann's Ice Cream + Pupsicles (VG)"],
+  snacks: [
+    'Corn Scratchings (VG)','Gnaw Chocolate (VG)','Kettle Crisps (VG)',
+    "Nobby's Nuts (VG)",'Kitkat','Mars Bar','Mini Cheddars',
+    'Mr Norfolk Kettlecorn (VG)','Riverbank Flapjack (VG)','Scampi Fries',
+    'Snackalami','Snacking Cheese','Snickers','Sweet Smiles Gummies (VG)',
+  ],
+  merch: [
+    'Black Cap, Slurp!',
+    "Black T, Slurp + '26 Breweries",
+    'Bottle Green T, Slurp!',
+    'Bright Green T, Slurp D Sunrise',
+    'Brown + White Trucker Cap, Slurp D Sunrise',
+    "Grey Sweater, Hop + '26 Breweries",
+    'Khaki Cap, Hop Patch',
+    "Long Black T, Hops + '26 Breweries",
+    'Notebook, Beer Designs',
+  ],
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+
+const STORAGE_KEY = 'slurp2026';
+const RATING_AXES = ['Hoppiness','Fruitiness','Bitterness','Sweetness','Body','Overall'];
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : { list: {} };
+  } catch { return { list: {} }; }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+let state = loadState();
+
+// Ensure state.list is an object
+if (!state.list || typeof state.list !== 'object') state.list = {};
+
+// ═══════════════════════════════════════════════════════
+// FILTER STATE
+// ═══════════════════════════════════════════════════════
+
+let activeBar = '';
+let activeStyle = '';
+let searchQ = '';
+
+const BAR_CHIPS = [
+  { label: 'All Bars', value: '' },
+  { label: 'Boom Bar', value: 'Boom Bar' },
+  { label: 'Taproom', value: 'Taproom Bar' },
+  { label: 'Farmers', value: 'Farmers Bar' },
+  { label: 'Wine Bar', value: 'Cocktail + Wine Bar' },
+];
+
+const STYLE_CHIPS = [
+  { label: 'All Styles', value: '' },
+  { label: 'IPA', value: 'ipa' },
+  { label: 'Pale', value: 'pale' },
+  { label: 'Dark', value: 'dark' },
+  { label: 'Sour', value: 'sour' },
+  { label: 'Lager', value: 'lager' },
+  { label: 'Wild', value: 'wild' },
+  { label: 'Cask', value: 'cask' },
+  { label: 'No/Low', value: 'nolow' },
+];
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+
+function cat(style, tags) {
+  const s = style.toLowerCase();
+  if (/\bipa\b|india pale|double ipa|ddh ipa/.test(s)) return 'ipa';
+  if (/pale|xpa|table pale|hopped pale/.test(s)) return 'pale';
+  if (/stout|porter|dark ale|mild/.test(s)) return 'dark';
+  if (/sour|berliner|gose|framboise/.test(s)) return 'sour';
+  if (/lager|pils|pilsner|radler|helles/.test(s)) return 'lager';
+  if (tags.includes('wild') || /foeder|wild/.test(s)) return 'wild';
+  if (tags.includes('cask')) return 'cask';
+  if (tags.includes('nolow') || tags.includes('af')) return 'nolow';
+  return '';
+}
+
+function beerCat(beer) { return cat(beer.s, beer.t); }
+
+function beerPassesFilters(beer) {
+  // Bar filter
+  if (activeBar !== '' && !beer.bars.includes(activeBar)) return false;
+  // Style filter
+  if (activeStyle !== '') {
+    const c = beerCat(beer);
+    if (c !== activeStyle) {
+      // special: nolow also includes abv <= 1
+      if (activeStyle === 'nolow') {
+        if (!(beer.abv !== null && beer.abv <= 1.0) && !beer.t.includes('nolow') && !beer.t.includes('af')) return false;
+      } else {
+        return false;
+      }
+    }
+  }
+  // Search
+  if (searchQ) {
+    const q = searchQ.toLowerCase();
+    const haystack = [beer.n, beer.b, beer.s, beer.adj || '', beer.co || ''].join(' ').toLowerCase();
+    if (!haystack.includes(q)) return false;
+  }
+  return true;
+}
+
+function onList(id) { return !!state.list[id]; }
+function isTried(id) { return state.list[id] && state.list[id].tried; }
+
+function listCount() { return Object.keys(state.list).length; }
+function triedCount() { return Object.values(state.list).filter(v => v.tried).length; }
+
+function addToList(id) {
+  if (state.list[id]) return;
+  state.list[id] = { tried: false, ratings: {}, notes: '' };
+  saveState();
+}
+
+function removeFromList(id) {
+  delete state.list[id];
+  saveState();
+}
+
+function toggleTried(id) {
+  if (!state.list[id]) return;
+  state.list[id].tried = !state.list[id].tried;
+  saveState();
+}
+
+function setRating(id, axis, val) {
+  if (!state.list[id]) return;
+  if (!state.list[id].ratings) state.list[id].ratings = {};
+  state.list[id].ratings[axis] = val;
+  saveState();
+}
+
+function setNotes(id, text) {
+  if (!state.list[id]) return;
+  state.list[id].notes = text;
+  saveState();
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  const container = document.getElementById('toast-container');
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 2400);
+}
+
+// ═══════════════════════════════════════════════════════
+// HEADER STATS
+// ═══════════════════════════════════════════════════════
+
+function updateStats() {
+  const el = document.getElementById('header-stats');
+  const lc = listCount();
+  const tc = triedCount();
+  el.textContent = `${BEERS.length} beers · ${lc} on list · ${tc} tried`;
+
+  const badge = document.getElementById('list-badge');
+  if (lc > 0) {
+    badge.textContent = lc;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// BEERS TAB
+// ═══════════════════════════════════════════════════════
+
+function buildBarChips() {
+  const row = document.getElementById('bar-filters');
+  row.innerHTML = '';
+  BAR_CHIPS.forEach(chip => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (activeBar === chip.value ? ' active' : '');
+    btn.textContent = chip.label;
+    btn.addEventListener('click', () => {
+      activeBar = chip.value;
+      buildBarChips();
+      renderBeerList();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function buildStyleChips() {
+  const row = document.getElementById('style-filters');
+  row.innerHTML = '';
+  STYLE_CHIPS.forEach(chip => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (activeStyle === chip.value ? ' active' : '');
+    btn.textContent = chip.label;
+    btn.addEventListener('click', () => {
+      activeStyle = chip.value;
+      buildStyleChips();
+      renderBeerList();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function barLabel(barVal) {
+  const found = BAR_CHIPS.find(c => c.value === barVal);
+  return found ? found.label : barVal;
+}
+
+function makeBeerCard(beer, container) {
+  const card = document.createElement('div');
+  const listed = onList(beer.id);
+  const tried = isTried(beer.id);
+  card.className = 'beer-card' + (tried ? ' tried-card' : listed ? ' on-list' : '');
+  card.dataset.id = beer.id;
+
+  // Info section
+  const info = document.createElement('div');
+  info.className = 'beer-info';
+
+  const name = document.createElement('div');
+  name.className = 'beer-name';
+  name.textContent = beer.n;
+  info.appendChild(name);
+
+  const sub = document.createElement('div');
+  sub.className = 'beer-sub';
+  const abvText = beer.abv !== null ? `<span class="abv">${beer.abv.toFixed(1)}%</span>` : '';
+  sub.innerHTML = `${escHtml(beer.s)}${abvText ? ' · ' + abvText : ''}`;
+  info.appendChild(sub);
+
+  if (beer.adj) {
+    const adj = document.createElement('div');
+    adj.className = 'beer-adj';
+    adj.textContent = beer.adj;
+    info.appendChild(adj);
+  }
+
+  if (beer.co) {
+    const co = document.createElement('div');
+    co.className = 'beer-collab';
+    co.textContent = `w/ ${beer.co}`;
+    info.appendChild(co);
+  }
+
+  // Badge row
+  const badgeRow = document.createElement('div');
+  badgeRow.className = 'badge-row';
+
+  // Bar pills
+  beer.bars.forEach(b => {
+    const p = document.createElement('span');
+    p.className = 'pill pill-bar';
+    p.textContent = barLabel(b);
+    badgeRow.appendChild(p);
+  });
+
+  // Tag pills
+  if (beer.t.includes('gf'))    badgeRow.appendChild(makePill('GF', 'pill-gf'));
+  if (beer.t.includes('af'))    badgeRow.appendChild(makePill('AF', 'pill-af'));
+  if (beer.t.includes('cask'))  badgeRow.appendChild(makePill('Cask', 'pill-cask'));
+  if (beer.t.includes('wild'))  badgeRow.appendChild(makePill('Wild/Foeder', 'pill-wild'));
+  if (beer.t.includes('nolow') && !beer.t.includes('af')) badgeRow.appendChild(makePill('No/Low', 'pill-nolow'));
+  if (beer.t.includes('tbc'))   badgeRow.appendChild(makePill('🔜 TBC', 'pill-tbc'));
+
+  info.appendChild(badgeRow);
+  card.appendChild(info);
+
+  // Add button
+  const btn = document.createElement('button');
+  btn.className = 'add-btn' + (listed ? ' on-list' : '');
+  btn.disabled = beer.t.includes('tbc');
+  btn.setAttribute('aria-label', listed ? 'On your list' : 'Add to list');
+
+  if (listed) {
+    btn.textContent = '✓';
+  } else {
+    btn.textContent = '+';
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (beer.t.includes('tbc')) return;
+    if (!onList(beer.id)) {
+      addToList(beer.id);
+      toast(`Added: ${beer.n}`);
+    } else {
+      toast(`Already on your list!`, 'info');
+    }
+    updateStats();
+    renderBeerList();
+    renderMyList();
+  });
+
+  card.appendChild(btn);
+  container.appendChild(card);
+}
+
+function makePill(text, cls) {
+  const p = document.createElement('span');
+  p.className = `pill ${cls}`;
+  p.textContent = text;
+  return p;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderBeerList() {
+  const container = document.getElementById('beer-list');
+  container.innerHTML = '';
+
+  const filtered = BEERS.filter(beerPassesFilters);
+
+  if (filtered.length === 0) {
+    const el = document.createElement('div');
+    el.className = 'no-results';
+    el.textContent = 'No beers match your search.';
+    container.appendChild(el);
+    return;
+  }
+
+  // Group by brewery preserving original order
+  const groups = new Map();
+  filtered.forEach(beer => {
+    if (!groups.has(beer.b)) groups.set(beer.b, []);
+    groups.get(beer.b).push(beer);
+  });
+
+  groups.forEach((beers, brewery) => {
+    const group = document.createElement('div');
+    group.className = 'brewery-group';
+
+    const header = document.createElement('div');
+    header.className = 'brewery-header';
+    header.textContent = brewery;
+    group.appendChild(header);
+
+    beers.forEach(beer => makeBeerCard(beer, group));
+    container.appendChild(group);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// WHAT'S ON TAB
+// ═══════════════════════════════════════════════════════
+
+function renderWhatsOn() {
+  const container = document.getElementById('whatson-content');
+  container.innerHTML = '';
+
+  const sections = [
+    { icon: '🍸', title: 'Cocktails', items: WHATS_ON.cocktails },
+    { icon: '🍷', title: 'Wine & Fizz', items: [...WHATS_ON.wines, ...WHATS_ON.ciders] },
+    { icon: '🚫', title: 'Alcohol Free', items: WHATS_ON.afBeers },
+    { icon: '🥤', title: 'Soft Drinks & Kids', items: [...WHATS_ON.softDrinks, ...WHATS_ON.iceCream] },
+    { icon: '🍫', title: 'Snacks', items: WHATS_ON.snacks },
+    { icon: '👕', title: 'Merch', items: WHATS_ON.merch },
+  ];
+
+  sections.forEach(sec => {
+    const wrap = document.createElement('div');
+    wrap.className = 'whats-on-section';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-header';
+    hdr.innerHTML = `<span class="section-icon">${sec.icon}</span><span>${escHtml(sec.title)}</span>`;
+    wrap.appendChild(hdr);
+
+    sec.items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'wo-item';
+      row.textContent = item;
+      wrap.appendChild(row);
+    });
+
+    container.appendChild(wrap);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// MY LIST TAB
+// ═══════════════════════════════════════════════════════
+
+function renderMyList() {
+  const container = document.getElementById('mylist-content');
+  container.innerHTML = '';
+
+  const listIds = Object.keys(state.list).map(Number);
+  const listBeers = BEERS.filter(b => listIds.includes(b.id));
+
+  if (listBeers.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-list';
+    empty.innerHTML = `
+      <div class="empty-icon">🌿</div>
+      <p>Your list is empty.<br>Head to <strong>Beers</strong> and tap <strong>+</strong> to start adding.</p>
+    `;
+    container.appendChild(empty);
+    return;
+  }
+
+  // Group by brewery
+  const groups = new Map();
+  listBeers.forEach(beer => {
+    if (!groups.has(beer.b)) groups.set(beer.b, []);
+    groups.get(beer.b).push(beer);
+  });
+
+  groups.forEach((beers, brewery) => {
+    const groupWrap = document.createElement('div');
+
+    const hdr = document.createElement('div');
+    hdr.className = 'brewery-header';
+    hdr.textContent = brewery;
+    groupWrap.appendChild(hdr);
+
+    beers.forEach(beer => {
+      const data = state.list[beer.id] || {};
+      const tried = data.tried || false;
+
+      const card = document.createElement('div');
+      card.className = 'list-card' + (tried ? ' tried-card' : '');
+
+      // Card header
+      const cardHdr = document.createElement('div');
+      cardHdr.className = 'list-card-header';
+
+      const titleWrap = document.createElement('div');
+      titleWrap.className = 'list-card-title';
+
+      const brew = document.createElement('div');
+      brew.className = 'list-brewery';
+      brew.textContent = beer.b;
+      titleWrap.appendChild(brew);
+
+      const bname = document.createElement('div');
+      bname.className = 'list-name';
+      bname.textContent = beer.n;
+      titleWrap.appendChild(bname);
+
+      const bsub = document.createElement('div');
+      bsub.className = 'list-sub';
+      const abvStr = beer.abv !== null ? ` · <span class="abv">${beer.abv.toFixed(1)}%</span>` : '';
+      bsub.innerHTML = escHtml(beer.s) + abvStr;
+      titleWrap.appendChild(bsub);
+
+      cardHdr.appendChild(titleWrap);
+
+      // Actions
+      const actions = document.createElement('div');
+      actions.className = 'list-actions';
+
+      const triedBtn = document.createElement('button');
+      triedBtn.className = 'tried-btn' + (tried ? ' active' : '');
+      triedBtn.textContent = tried ? '✓ Tried' : 'Mark Tried';
+      triedBtn.addEventListener('click', () => {
+        toggleTried(beer.id);
+        if (state.list[beer.id].tried) toast(`Marked as tried: ${beer.n}`);
+        updateStats();
+        renderBeerList();
+        renderMyList();
+      });
+      actions.appendChild(triedBtn);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = 'Remove';
+      removeBtn.addEventListener('click', () => {
+        removeFromList(beer.id);
+        toast(`Removed: ${beer.n}`, 'info');
+        updateStats();
+        renderBeerList();
+        renderMyList();
+      });
+      actions.appendChild(removeBtn);
+      cardHdr.appendChild(actions);
+      card.appendChild(cardHdr);
+
+      // Star ratings
+      const ratingsWrap = document.createElement('div');
+      ratingsWrap.className = 'ratings-wrap';
+
+      RATING_AXES.forEach(axis => {
+        const row = document.createElement('div');
+        row.className = 'rating-row';
+
+        const lbl = document.createElement('div');
+        lbl.className = 'rating-label';
+        lbl.textContent = axis;
+        row.appendChild(lbl);
+
+        const stars = document.createElement('div');
+        stars.className = 'stars';
+        const currentVal = (data.ratings && data.ratings[axis]) || 0;
+
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElement('span');
+          star.className = 'star' + (i <= currentVal ? ' filled' : '');
+          star.textContent = '★';
+          star.dataset.val = i;
+
+          star.addEventListener('click', () => {
+            const prev = (state.list[beer.id].ratings && state.list[beer.id].ratings[axis]) || 0;
+            const newVal = i === prev ? 0 : i; // click same star to clear
+            setRating(beer.id, axis, newVal);
+            renderMyList();
+          });
+
+          star.addEventListener('mouseover', () => {
+            const allStars = stars.querySelectorAll('.star');
+            allStars.forEach((s, idx) => {
+              s.style.color = idx < i ? 'var(--amber)' : '';
+            });
+          });
+
+          star.addEventListener('mouseout', () => {
+            const allStars = stars.querySelectorAll('.star');
+            const cv = (state.list[beer.id] && state.list[beer.id].ratings && state.list[beer.id].ratings[axis]) || 0;
+            allStars.forEach((s, idx) => {
+              s.style.color = idx < cv ? 'var(--amber)' : '';
+            });
+          });
+
+          stars.appendChild(star);
+        }
+        row.appendChild(stars);
+        ratingsWrap.appendChild(row);
+      });
+
+      card.appendChild(ratingsWrap);
+
+      // Tasting notes
+      const notesWrap = document.createElement('div');
+      notesWrap.className = 'notes-wrap';
+
+      const textarea = document.createElement('textarea');
+      textarea.className = 'notes-textarea';
+      textarea.placeholder = 'Tasting notes…';
+      textarea.value = data.notes || '';
+      textarea.addEventListener('input', (e) => {
+        setNotes(beer.id, e.target.value);
+      });
+      notesWrap.appendChild(textarea);
+
+      // Untappd link
+      const untappdQ = encodeURIComponent(`${beer.b} ${beer.n}`);
+      const untappdLink = document.createElement('a');
+      untappdLink.className = 'untappd-link';
+      untappdLink.href = `https://untappd.com/search?q=${untappdQ}`;
+      untappdLink.target = '_blank';
+      untappdLink.rel = 'noopener noreferrer';
+      untappdLink.innerHTML = `<span>🍺</span> Search Untappd`;
+      notesWrap.appendChild(untappdLink);
+
+      card.appendChild(notesWrap);
+      groupWrap.appendChild(card);
+    });
+
+    container.appendChild(groupWrap);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `panel-${tabName}`);
+  });
+  if (tabName === 'mylist') renderMyList();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Search
+document.getElementById('search-input').addEventListener('input', (e) => {
+  searchQ = e.target.value.trim();
+  renderBeerList();
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+buildBarChips();
+buildStyleChips();
+renderBeerList();
+renderWhatsOn();
+updateStats();
+</script>
+</body>
+</html>
