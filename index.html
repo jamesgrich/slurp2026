@@ -116,6 +116,7 @@
   .chip.active-diet-vg { background: #6a3de8; border-color: #6a3de8; color: #fff; }
   .chip.active-diet-v  { background: #3a8a3a; border-color: #3a8a3a; color: #fff; }
   .chip.active-diet-gf { background: var(--amber); border-color: var(--amber); color: #0e1710; }
+  .chip.active-diet-af { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
 
   /* ── MAIN CONTENT ── */
   .tab-panel { display: none; padding: 12px 0 80px; }
@@ -288,6 +289,7 @@
   .wo-diet-pill.vg { background: rgba(106,61,232,0.12); color: #a78bfa; border-color: rgba(106,61,232,0.25); }
   .wo-diet-pill.v  { background: rgba(58,138,58,0.12);  color: #6fc96f; border-color: rgba(58,138,58,0.25); }
   .wo-diet-pill.gf { background: rgba(232,162,58,0.15); color: var(--amber); border-color: rgba(232,162,58,0.3); }
+  .wo-diet-pill.af { background: rgba(14,165,233,0.12); color: #38bdf8; border-color: rgba(14,165,233,0.25); }
   .bar-avail { font-size: 0.6rem; color: var(--muted); }
 
   /* ── MY LIST ── */
@@ -454,7 +456,7 @@
   </div>
   <div class="tabs">
     <button class="tab-btn active" data-tab="beers">Beers</button>
-    <button class="tab-btn" data-tab="whatson">Other / Merch</button>
+    <button class="tab-btn" data-tab="whatson">Other Drinks</button>
     <button class="tab-btn" data-tab="mylist">My List <span class="badge" id="list-badge" style="display:none">0</span></button>
   </div>
 </header>
@@ -610,10 +612,10 @@ const SECTIONS = [
     bars: ['Cocktail + Wine'],
     food: true,
     items: [
-      { n: 'Mocktails',                p: '£5 virgin',       diet: ['vg','gf'] },
-      { n: 'Fruit Smooth-a-licious',   p: '£6.50 virgin',    diet: ['vg','gf'] },
-      { n: 'Lilac + Blueberry Cooler', p: '£10 / £6 virgin', diet: ['vg','gf'] },
-      { n: 'Lynchburg Lemonade',       p: '£10 / £6 virgin', diet: ['vg'] },
+      { n: 'Mocktails',                p: '£5 virgin',       diet: ['vg','gf','af'] },
+      { n: 'Fruit Smooth-a-licious',   p: '£6.50 virgin',    diet: ['vg','gf','af'] },
+      { n: 'Lilac + Blueberry Cooler', p: '£10 / £6 virgin', diet: ['vg','gf','af'] },
+      { n: 'Lynchburg Lemonade',       p: '£10 / £6 virgin', diet: ['vg','af'] },
       { n: 'Mimosa',                   p: '£8',              diet: ['vg','gf'] },
       { n: 'Bloody Mary',              p: '£10',             diet: [] },
       { n: 'Espresso Martini',         p: '£10',             diet: ['vg','gf'] },
@@ -668,10 +670,10 @@ const SECTIONS = [
     bars: ['Farmers Bar', 'Taproom Bar'],
     food: true,
     items: [
-      { n: 'Burnt Mill Citra + Mosaic AF West Coast 440ml', p: '£5', diet: ['vg','gf'] },
-      { n: 'Cloudwater Fresh AF IPA 440ml',                 p: '£5', diet: ['vg'] },
-      { n: 'Guinness Zero AF Stout 440ml',                  p: '£5', diet: ['vg'] },
-      { n: 'Ascension Cider 440ml 4.5%',                    p: '£5', diet: ['vg','gf'] },
+      { n: 'Burnt Mill Citra + Mosaic AF West Coast 440ml', p: '£5', diet: ['vg','gf','af'] },
+      { n: 'Cloudwater Fresh AF IPA 440ml',                 p: '£5', diet: ['vg','af'] },
+      { n: 'Guinness Zero AF Stout 440ml',                  p: '£5', diet: ['vg','af'] },
+      { n: 'Ascension Cider 440ml 4.5%',                    p: '£5', diet: ['vg','gf','af'] },
     ]
   },
   {
@@ -775,6 +777,7 @@ const DIET_CHIPS = [
   { label: 'Vegan',        value: 'vg', cls: 'active-diet-vg' },
   { label: 'Vegetarian',   value: 'v',  cls: 'active-diet-v'  },
   { label: 'Gluten Free',  value: 'gf', cls: 'active-diet-gf' },
+  { label: 'Alc Free',     value: 'af', cls: 'active-diet-af' },
 ];
 
 const STYLE_CHIPS = [
@@ -811,6 +814,7 @@ function dietMatch(itemDiet, activeDiet) {
   if (activeDiet === 'vg') return itemDiet.includes('vg');
   if (activeDiet === 'v')  return itemDiet.includes('vg') || itemDiet.includes('v');
   if (activeDiet === 'gf') return itemDiet.includes('gf');
+  if (activeDiet === 'af') return itemDiet.includes('af');
   return true;
 }
 
@@ -1132,7 +1136,7 @@ function renderWhatsOn() {
           item.diet.forEach(d => {
             const pill = document.createElement('span');
             pill.className = `wo-diet-pill ${d}`;
-            pill.textContent = d === 'vg' ? 'Vegan' : d === 'v' ? 'Veggie' : 'GF';
+            pill.textContent = d === 'vg' ? 'Vegan' : d === 'v' ? 'Veggie' : d === 'gf' ? 'GF' : 'AF';
             meta.appendChild(pill);
           });
         }
