@@ -365,89 +365,10 @@
     .tab-btn { font-size: 0.74rem; }
   }
   /* ── PASSWORD GATE ── */
-  #pw-gate {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #0e1710;
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px;
-  }
-  #pw-gate.hidden { display: none; }
-  .pw-box {
-    background: #1c2c1e;
-    border: 1px solid #2c3f2e;
-    border-radius: 16px;
-    padding: 32px 28px;
-    max-width: 340px;
-    width: 100%;
-    text-align: center;
-  }
-  .pw-box h1 { font-size: 1.6rem; font-weight: 800; color: #f0f7f1; margin-bottom: 4px; }
-  .pw-box p  { font-size: 0.85rem; color: #7aaa80; margin-bottom: 24px; }
-  .pw-input {
-    width: 100%; background: #141f15; border: 1px solid #384f3a;
-    border-radius: 10px; color: #f0f7f1; font-size: 1rem;
-    padding: 12px 14px; outline: none; margin-bottom: 12px;
-    text-align: center; letter-spacing: 2px;
-    transition: border-color 0.15s;
-  }
-  .pw-input:focus { border-color: #52c97a; }
-  .pw-input.shake {
-    animation: shake 0.35s ease;
-    border-color: #e05b5b;
-  }
-  .pw-btn {
-    width: 100%; background: #52c97a; border: none; border-radius: 10px;
-    color: #0e1710; font-size: 1rem; font-weight: 700; padding: 12px;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  .pw-btn:hover { opacity: 0.88; }
-  .pw-error { font-size: 0.78rem; color: #e07070; margin-top: 10px; min-height: 18px; }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    20%      { transform: translateX(-8px); }
-    40%      { transform: translateX(8px); }
-    60%      { transform: translateX(-5px); }
-    80%      { transform: translateX(5px); }
-  }
 </style>
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
-<div id="pw-gate">
-  <div class="pw-box">
-    <h1>🌿 Slurp! 2026</h1>
-    <p>Duration Brewing Festival</p>
-    <input id="pw-input" class="pw-input" type="password" placeholder="Enter password" autocomplete="off">
-    <button class="pw-btn" id="pw-btn">Enter</button>
-    <div class="pw-error" id="pw-error"></div>
-  </div>
-</div>
-
-<script>
-(function() {
-  var KEY = 'slurp2026_auth';
-  var HASH = 'RHVyNHRpb24h'; // btoa('Dur4tion!')
-  function unlock() { document.getElementById('pw-gate').classList.add('hidden'); }
-  if (sessionStorage.getItem(KEY) === '1') { unlock(); return; }
-  document.getElementById('pw-btn').addEventListener('click', check);
-  document.getElementById('pw-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') check(); });
-  function check() {
-    var val = document.getElementById('pw-input').value;
-    if (btoa(val) === HASH) {
-      sessionStorage.setItem(KEY, '1');
-      unlock();
-    } else {
-      var inp = document.getElementById('pw-input');
-      inp.classList.remove('shake');
-      void inp.offsetWidth;
-      inp.classList.add('shake');
-      document.getElementById('pw-error').textContent = 'Incorrect password';
-      inp.value = '';
-    }
-  }
-})();
-</script>
 
 <header class="app-header">
   <div class="header-top">
