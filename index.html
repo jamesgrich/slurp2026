@@ -988,16 +988,21 @@ function makeBeerCard(beer, container) {
 
   const tier = BEER_TIERS[beer.n];
   if (tier && TIER_PRICES[tier]) {
-    const priceText = document.createElement('div');
-    priceText.style.cssText = 'font-size:0.8rem;font-weight:700;color:var(--amber);text-align:right;white-space:nowrap';
-    priceText.textContent = TIER_PRICES[tier].prices;
-    right.appendChild(priceText);
-    const pillRow = document.createElement('div');
-    pillRow.style.cssText = 'display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end';
-    TIER_PRICES[tier].sizes.split(' · ').forEach(size => {
-      pillRow.appendChild(makePill(size, 'pill-price'));
+    const sizes  = TIER_PRICES[tier].sizes.split(' · ');
+    const prices = TIER_PRICES[tier].prices.split(' · ');
+    const pairRow = document.createElement('div');
+    pairRow.style.cssText = 'display:flex;gap:4px;justify-content:flex-end';
+    sizes.forEach((size, i) => {
+      const col = document.createElement('div');
+      col.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px';
+      const priceLbl = document.createElement('div');
+      priceLbl.style.cssText = 'font-size:0.78rem;font-weight:700;color:var(--amber);white-space:nowrap';
+      priceLbl.textContent = prices[i];
+      col.appendChild(priceLbl);
+      col.appendChild(makePill(size, 'pill-price'));
+      pairRow.appendChild(col);
     });
-    right.appendChild(pillRow);
+    right.appendChild(pairRow);
   }
 
   card.appendChild(right);
