@@ -988,11 +988,16 @@ function makeBeerCard(beer, container) {
 
   const tier = BEER_TIERS[beer.n];
   if (tier && TIER_PRICES[tier]) {
-    const sizes  = TIER_PRICES[tier].sizes.split(' · ');
-    const prices = TIER_PRICES[tier].prices.split(' · ');
-    sizes.forEach((size, i) => {
-      right.appendChild(makePill(`${size} ${prices[i]}`, 'pill-price'));
+    const priceText = document.createElement('div');
+    priceText.style.cssText = 'font-size:0.8rem;font-weight:700;color:var(--amber);text-align:right;white-space:nowrap';
+    priceText.textContent = TIER_PRICES[tier].prices;
+    right.appendChild(priceText);
+    const pillRow = document.createElement('div');
+    pillRow.style.cssText = 'display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end';
+    TIER_PRICES[tier].sizes.split(' · ').forEach(size => {
+      pillRow.appendChild(makePill(size, 'pill-price'));
     });
+    right.appendChild(pillRow);
   }
 
   card.appendChild(right);
