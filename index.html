@@ -378,6 +378,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="beers">Beers</button>
     <button class="tab-btn" data-tab="whatson">Other Drinks</button>
+    <button class="tab-btn" data-tab="merch">Merch</button>
     <button class="tab-btn" data-tab="mylist">My List <span class="badge" id="list-badge" style="display:none">0</span></button>
   </div>
 </header>
@@ -404,6 +405,11 @@
 <!-- ═══════════════ TAB: WHAT'S ON ═══════════════ -->
 <div class="tab-panel" id="panel-whatson">
   <div id="whatson-content"></div>
+</div>
+
+<!-- ═══════════════ TAB: MERCH ═══════════════ -->
+<div class="tab-panel" id="panel-merch">
+  <div id="merch-content"></div>
 </div>
 
 <!-- ═══════════════ TAB: MY LIST ═══════════════ -->
@@ -507,8 +513,8 @@ const BEERS = [
   {id:60, tap:40, keg:1, b:'Duration',        n:'Sweeping Coast',          s:'West Coast Pale',       abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:true,  adj:'Bright · Fresh'},
 
   // ── COCKTAIL, WINE + CANDY BAR ──
-  {id:61, tap:41, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Cocktail, Wine + Candy Bar', t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
-  {id:62, tap:42, keg:1, b:'Duration',        n:"Cuttin' Grass",           s:'Italian Pilsner',       abv:4.5, bar:'Cocktail, Wine + Candy Bar', t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Crisp · Lemon'},
+  {id:61, tap:41, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Cocktail Bar',             t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
+  {id:62, tap:42, keg:1, b:'Duration',        n:"Cuttin' Grass",           s:'Italian Pilsner',       abv:4.5, bar:'Cocktail Bar',             t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Crisp · Lemon'},
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -530,7 +536,7 @@ const SECTIONS = [
   },
   {
     id: 'cocktails', icon: '🍸', title: 'Cocktails + Mocktails',
-    bars: ['Cocktail, Wine + Candy Bar'],
+    bars: ['Cocktail Bar', 'Wine + Candy Bar'],
     food: true,
     items: [
       { n: 'Mocktails',                p: '£5 virgin',       diet: ['vg','gf','af'] },
@@ -579,7 +585,7 @@ const SECTIONS = [
   },
   {
     id: 'wines', icon: '🍷', title: 'Wine + Fizz',
-    bars: ['Cocktail, Wine + Candy Bar', 'Taproom Bar'],
+    bars: ['Wine + Candy Bar', 'Taproom Bar'],
     food: true,
     items: [
       { n: 'Red / White / Rosé', p: '175ml £6 · 250ml £7.80 · Bottle £24', diet: ['vg','gf'] },
@@ -588,7 +594,7 @@ const SECTIONS = [
   },
   {
     id: 'af', icon: '🚫', title: 'Alcohol Free + Cider',
-    bars: ['Farmers Bar', 'Taproom Bar', 'Cocktail, Wine + Candy Bar'],
+    bars: ['Farmers Bar', 'Taproom Bar', 'Cocktail Bar', 'Wine + Candy Bar'],
     food: true,
     items: [
       { n: 'Burnt Mill Citra + Mosaic AF West Coast 440ml — 0.5%', p: '£5', diet: ['vg','gf','af'], note: 'Farmers, Candy Bar' },
@@ -602,7 +608,7 @@ const SECTIONS = [
   },
   {
     id: 'softs', icon: '🥤', title: 'Soft Drinks',
-    bars: ['Taproom Bar', 'Cocktail, Wine + Candy Bar'],
+    bars: ['Taproom Bar', 'Wine + Candy Bar'],
     food: true,
     items: [
       { n: 'Highland Spring Water 500ml',          p: '£1.50',          diet: ['vg','gf','af'] },
@@ -621,7 +627,7 @@ const SECTIONS = [
   },
   {
     id: 'icecream', icon: '🍦', title: 'Ice Cream + Sorbet',
-    bars: ['Cocktail, Wine + Candy Bar'],
+    bars: ['Wine + Candy Bar'],
     food: true,
     items: [
       { n: 'Vanilla',        p: '£3', diet: ['v','gf'] },
@@ -633,7 +639,7 @@ const SECTIONS = [
   },
   {
     id: 'snacks', icon: '🍫', title: 'Snacks + Sweets',
-    bars: ['Taproom Bar', 'Cocktail, Wine + Candy Bar'],
+    bars: ['Taproom Bar', 'Wine + Candy Bar'],
     food: true,
     items: [
       { n: 'Mini Cheddars',         p: '£1',         diet: ['v','af'] },
@@ -705,7 +711,8 @@ const BAR_CHIPS = [
   { label: 'Boom Bar',   value: 'Boom Bar' },
   { label: 'Farmers',    value: 'Farmers Bar' },
   { label: 'Taproom',    value: 'Taproom Bar' },
-  { label: 'Candy Bar',  value: 'Cocktail, Wine + Candy Bar' },
+  { label: 'Cocktail Bar',      value: 'Cocktail Bar' },
+  { label: 'Wine + Candy Bar',  value: 'Wine + Candy Bar' },
 ];
 
 const DIET_CHIPS = [
@@ -757,7 +764,7 @@ function dietMatch(itemDiet, activeDiet) {
 function beerPassesFilters(beer) {
   if (activeBar !== '' && beer.bar !== activeBar) return false;
   if (activeDiet === 'gf' && !beer.t.includes('gf')) return false;
-  // vg/v: all beers assumed vegan, no filter needed
+  if (activeDiet === 'af' && !beer.t.includes('af') && !beer.t.includes('nolow') && beer.abv > 1.0) return false;
   if (activeStyle !== '') {
     const c = cat(beer.s, beer.t);
     if (c !== activeStyle) {
@@ -963,7 +970,7 @@ function makeBeerCard(beer, container) {
   container.appendChild(card);
 }
 
-const BAR_ORDER = ['Boom Bar', 'Farmers Bar', 'Taproom Bar', 'Cocktail, Wine + Candy Bar'];
+const BAR_ORDER = ['Boom Bar', 'Farmers Bar', 'Taproom Bar', 'Cocktail Bar', 'Wine + Candy Bar'];
 
 function renderBeerList() {
   const container = document.getElementById('beer-list');
@@ -1010,12 +1017,47 @@ function renderBeerList() {
 // WHAT'S ON TAB
 // ═══════════════════════════════════════════════════════
 
+function renderMerch() {
+  const container = document.getElementById('merch-content');
+  if (!container) return;
+  const sec = SECTIONS.find(s => s.id === 'merch');
+  if (!sec) { container.innerHTML = ''; return; }
+  container.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'whats-on-section';
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = `<span>${sec.icon}</span><span>${sec.title}</span>`;
+  wrap.appendChild(hdr);
+  sec.items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'wo-item';
+    const left = document.createElement('div');
+    left.className = 'wo-item-left';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'wo-item-name';
+    nameEl.textContent = item.n;
+    left.appendChild(nameEl);
+    row.appendChild(left);
+    if (item.p) {
+      const priceEl = document.createElement('div');
+      priceEl.className = 'wo-price';
+      priceEl.textContent = item.p;
+      row.appendChild(priceEl);
+    }
+    wrap.appendChild(row);
+  });
+  container.appendChild(wrap);
+}
+
 function renderWhatsOn() {
   const container = document.getElementById('whatson-content');
   container.innerHTML = '';
   let anyShown = false;
 
   SECTIONS.forEach(sec => {
+    // Merch rendered in its own tab
+    if (sec.id === 'merch') return;
     // Bar filter
     if (activeBar !== '' && !sec.bars.includes(activeBar)) return;
 
@@ -1247,6 +1289,7 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabName));
   document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === `panel-${tabName}`));
   if (tabName === 'mylist') renderMyList();
+  if (tabName === 'merch') renderMerch();
 }
 document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
 document.getElementById('search-input').addEventListener('input', (e) => { searchQ = e.target.value.trim(); renderBeerList(); });
