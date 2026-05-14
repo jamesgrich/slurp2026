@@ -982,7 +982,10 @@ function renderBeerList() {
   if (filtered.length === 0) {
     const el = document.createElement('div');
     el.className = 'no-results';
-    el.textContent = 'No beers match your filters.';
+    const barsWithTaps = ['Boom Bar', 'Farmer Bar', 'Taproom Bar', 'Cocktail'];
+    el.textContent = activeBar && !barsWithTaps.includes(activeBar)
+      ? `No tap beers at ${activeBar} — check the Other Drinks tab.`
+      : 'No beers match your filters.';
     container.appendChild(el);
     return;
   }
