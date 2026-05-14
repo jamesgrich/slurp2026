@@ -431,17 +431,17 @@ const BEERS = [
   {id:1,  tap:1,  keg:1, b:'Duration',        n:'Truck',                   s:'New England IPA',       abv:6.0, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Citrus · Peach'},
   {id:2,  tap:1,  keg:2, b:'Duration',        n:'Deep Fried',              s:'IPA',                   abv:6.2, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Bold · Mango'},
   // ── Tap 2 ──
-  {id:3,  tap:2,  keg:1, b:'Duration',        n:'Dripping Pitch',          s:'West Coast IPA',        abv:6.7, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Bold · Bitter'},
+  {id:3,  tap:2,  keg:1, b:'Duration',        n:'Dripping Pitch',          s:'West Coast IPA',        abv:6.7, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, award:true,  adj:'Bold · Bitter'},
   {id:4,  tap:2,  keg:2, b:'Duration',        n:'Camberwell',              s:'Pale Ale',              abv:4.8, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Citrus · Apricot'},
   // ── Tap 3 ──
   {id:5,  tap:3,  keg:1, b:'Duration',        n:'Strataberry Fields',      s:'Fruited Grisette',      abv:4.0, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Spritzy · Tart'},
-  {id:6,  tap:3,  keg:2, b:'Duration',        n:'Fold + Fly',              s:'Foeder Lager',          abv:5.1, bar:'Boom Bar',            t:['wild'],      diet:['vg'],       co:'Balance',           dark:false, collab:true,  adj:'Hay · Brett'},
+  {id:6,  tap:3,  keg:2, b:'Duration',        n:'Fold + Fly',              s:'Foeder Lager',          abv:5.1, bar:'Boom Bar',            t:['wild'],      diet:['vg'],       co:'Balance',           dark:false, collab:true,  award:true,  adj:'Hay · Brett'},
   // ── Tap 4 ──
   {id:7,  tap:4,  keg:1, b:'Duration',        n:'Shine #2',                s:'Krush Hopped Pale',     abv:4.8, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Mandarin · Peach'},
   {id:8,  tap:4,  keg:2, b:'Duration',        n:'Shine #1',                s:'Simcoe Pale',           abv:4.9, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Pine'},
   // ── Tap 5 ──
   {id:9,  tap:5,  keg:1, b:'Duration',        n:'Sorbetto',                s:'Raspberry Gose',        abv:4.4, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tart · Raspberry'},
-  {id:10, tap:5,  keg:2, b:'Duration',        n:'Doses',                   s:'German Pilsner',        abv:5.1, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Crisp · Dry'},
+  {id:10, tap:5,  keg:2, b:'Duration',        n:'Doses',                   s:'German Pilsner',        abv:5.1, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, award:true,  adj:'Crisp · Dry'},
   // ── Tap 6 ──
   {id:11, tap:6,  keg:1, b:'Ampersand',       n:'Affogato',                s:'Coffee + Vanilla Stout',abv:8.0, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:true,  collab:false, adj:'Coffee · Cream'},
   {id:12, tap:6,  keg:2, b:'Ampersand',       n:'Rhubarb Crumble',         s:'Sour',                  abv:5.6, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tart · Oaty'},
@@ -489,12 +489,12 @@ const BEERS = [
   {id:40, tap:20, keg:2, b:'Verdant',         n:'Vanity Metrics',          s:'Pale',                  abv:4.8, bar:'Boom Bar',            t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Lime · Thyme'},
 
   // ── FARMERS BAR ──
-  {id:41, tap:21, keg:1, b:'Duration',        n:'Turtles All The Way Down',s:'IPA',                   abv:5.5, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Juicy'},
-  {id:42, tap:22, keg:1, b:'Duration',        n:'Good Times',              s:'Light Lager',           abv:4.2, bar:'Farmer Bar',         t:['gf'],        diet:['vg','gf'],  co:null,                dark:false, collab:false, adj:'Crisp · Sweet'},
+  {id:41, tap:21, keg:1, b:'Duration',        n:'Turtles All The Way Down',s:'IPA',                   abv:5.5, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, award:true,  adj:'Tropical · Juicy'},
+  {id:42, tap:22, keg:1, b:'Duration',        n:'Good Times',              s:'Light Lager',           abv:4.2, bar:'Farmer Bar',         t:['gf'],        diet:['vg','gf'],  co:null,                dark:false, collab:false, award:true,  adj:'Crisp · Sweet'},
   {id:43, tap:23, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
   {id:44, tap:24, keg:1, b:'Duration',        n:'Slurp!',                  s:'Table Pale',            abv:3.0, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Peach · Fresh'},
   {id:45, tap:25, keg:1, b:'Duration',        n:'Bonsai 2026',             s:'Hazy Pale',             abv:4.8, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Papaya · Pine'},
-  {id:46, tap:26, keg:1, b:'Duration',        n:'Ebb + Flow',              s:'American Stout',        abv:4.8, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:true,  collab:true,  adj:'Coffee · Fruitcake'},
+  {id:46, tap:26, keg:1, b:'Duration',        n:'Ebb + Flow',              s:'American Stout',        abv:4.8, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:true,  collab:true,  award:true,  adj:'Coffee · Fruitcake'},
   {id:47, tap:27, keg:1, b:'Cloudwater',      n:'Fresh AF',                s:'IPA',                   abv:0.5, bar:'Farmer Bar',         t:['af','nolow'],diet:['vg'],       co:null,                dark:false, collab:false, adj:'Fresh · Hazy'},
   {id:48, tap:28, keg:1, b:'Downham Cider',   n:'Tickle Cider',            s:'Apple Cider',           abv:4.0, bar:'Farmer Bar',         t:['gf'],        diet:['vg','gf'],  co:null,                dark:false, collab:false, adj:'Crisp · Fresh'},
   {id:49, tap:29, keg:1, b:'Duration',        n:'Trampoline',              s:'Pale Ale',              abv:4.4, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Easy · Refreshing'},
@@ -503,18 +503,18 @@ const BEERS = [
   {id:52, tap:32, keg:1, b:'Stargate Brewing',n:'Strata',                  s:'Cold IPA',              abv:6.0, bar:'Farmer Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Dry · Fruity · Clean'},
 
   // ── TAPROOM BAR ──
-  {id:53, tap:33, keg:1, b:'Duration',        n:'Turtles All The Way Down',s:'IPA',                   abv:5.5, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Juicy'},
-  {id:54, tap:34, keg:1, b:'Duration',        n:'Good Times',              s:'American Light Lager',  abv:4.2, bar:'Taproom Bar',         t:['gf'],        diet:['vg','gf'],  co:null,                dark:false, collab:false, adj:'Crisp · Sweet'},
+  {id:53, tap:33, keg:1, b:'Duration',        n:'Turtles All The Way Down',s:'IPA',                   abv:5.5, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, award:true,  adj:'Tropical · Juicy'},
+  {id:54, tap:34, keg:1, b:'Duration',        n:'Good Times',              s:'American Light Lager',  abv:4.2, bar:'Taproom Bar',         t:['gf'],        diet:['vg','gf'],  co:null,                dark:false, collab:false, award:true,  adj:'Crisp · Sweet'},
   {id:55, tap:35, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
   {id:56, tap:36, keg:1, b:'Duration',        n:'Slurp!',                  s:'Table Pale',            abv:3.0, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Peach · Fresh'},
   {id:57, tap:37, keg:1, b:'Duration',        n:'Snapshot',                s:'Session IPA',           abv:4.5, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Mango · Peach'},
   {id:58, tap:38, keg:1, b:'Duration',        n:'Bonsai 2026',             s:'Hazy Pale',             abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Papaya · Pine'},
-  {id:59, tap:39, keg:1, b:'Duration',        n:'Ebb + Flow',              s:'American Stout',        abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:true,  collab:true,  adj:'Coffee · Fruitcake'},
-  {id:60, tap:40, keg:1, b:'Duration',        n:'Sweeping Coast',          s:'West Coast Pale',       abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:true,  adj:'Bright · Fresh'},
+  {id:59, tap:39, keg:1, b:'Duration',        n:'Ebb + Flow',              s:'American Stout',        abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:true,  collab:true,  award:true,  adj:'Coffee · Fruitcake'},
+  {id:60, tap:40, keg:1, b:'Duration',        n:'Sweeping Coast',          s:'West Coast Pale',       abv:4.8, bar:'Taproom Bar',         t:[],            diet:['vg'],       co:null,                dark:false, collab:true,  award:true,  adj:'Bright · Fresh'},
 
   // ── COCKTAIL, WINE + CANDY BAR ──
   {id:61, tap:41, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Cocktail',             t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
-  {id:62, tap:42, keg:1, b:'Duration',        n:"Cuttin' Grass",           s:'Italian Pilsner',       abv:4.5, bar:'Cocktail',             t:[],            diet:['vg'],       co:null,                dark:false, collab:false, adj:'Crisp · Lemon'},
+  {id:62, tap:42, keg:1, b:'Duration',        n:"Cuttin' Grass",           s:'Italian Pilsner',       abv:4.5, bar:'Cocktail',             t:[],            diet:['vg'],       co:null,                dark:false, collab:false, award:true,  adj:'Crisp · Lemon'},
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -914,7 +914,7 @@ function makeBeerCard(beer, container) {
 
   const name = document.createElement('div');
   name.className = 'beer-name';
-  name.textContent = beer.n;
+  name.textContent = (beer.award ? '🏆 ' : '') + beer.n;
   info.appendChild(name);
 
   const sub = document.createElement('div');
