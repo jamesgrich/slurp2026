@@ -1133,11 +1133,31 @@ function renderBeerList() {
         barsEl.textContent = item.bars.map(barAbbr).join(' · ');
         left.appendChild(barsEl);
       }
-      if (item.note) {
-        const noteEl = document.createElement('div');
-        noteEl.className = 'wo-item-meta';
-        noteEl.textContent = item.note;
-        left.appendChild(noteEl);
+      if (item.diet && item.diet.length > 0 || item.note || item.co) {
+        const meta = document.createElement('div');
+        meta.className = 'wo-item-meta';
+        if (item.diet) {
+          item.diet.forEach(d => {
+            if (d === 'af') return;
+            const pill = document.createElement('span');
+            pill.className = `wo-diet-pill ${d}`;
+            pill.textContent = d === 'vg' ? 'Vegan' : d === 'v' ? 'Veggie' : d === 'gf' ? 'GF' : 'LF';
+            meta.appendChild(pill);
+          });
+        }
+        if (item.co) {
+          const coSpan = document.createElement('span');
+          coSpan.style.cssText = 'font-size:0.7rem;color:var(--amber);margin-left:2px';
+          coSpan.textContent = 'w/ ' + item.co;
+          meta.appendChild(coSpan);
+        }
+        if (item.note) {
+          const note = document.createElement('span');
+          note.className = 'bar-avail';
+          note.textContent = item.note;
+          meta.appendChild(note);
+        }
+        left.appendChild(meta);
       }
       row.appendChild(left);
       if (item.p) {
