@@ -392,7 +392,7 @@
 <div class="global-filters" id="global-filters" style="position:sticky;top:var(--header-h,89px);z-index:99;">
   <div class="filter-label">Bar</div>
   <div class="filter-row" id="bar-filters"></div>
-  <div class="filter-label">Styles</div>
+  <div class="filter-label">Style</div>
   <div class="filter-row" id="style-filters"></div>
   <div class="filter-label">Dietary</div>
   <div class="filter-row" id="diet-filters"></div>
@@ -580,27 +580,27 @@ const SECTIONS = [
     bars: ['Taproom Bar', 'Horsebox'],
     food: true,
     items: [
-      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',          p: '£5.50', diet: ['vg','lf'],      adj: 'Tropical Juicy', award: true },
-      { n: 'Good Times 440ml — 4.2% American Light Lager',        p: '£4.25', diet: ['vg','gf','lf'], adj: 'Crisp Sweet', award: true },
-      { n: 'Snapshot 440ml — 4.5% Session IPA',                   p: '£5',    diet: ['vg','lf'],      adj: 'Mango Peach' },
-      { n: 'Another Day Done 440ml — 4.4% Juicy Pale',            p: '£5',    diet: ['vg','lf'],      adj: 'Juicy Mango' },
-      { n: 'Adventure Defender 440ml — 4.5% Session IPA',         p: '£5',    diet: ['vg','lf'],      adj: 'Tropical Zesty' },
-      { n: 'Bet The Farm 440ml — 4.5% Continental Pale',          p: '£5',    diet: ['vg','lf'],      adj: 'Crisp Dry', award: true },
-      { n: 'Board Games 440ml — 3.4% Pale Ale',                   p: '£4',    diet: ['vg','lf'],      adj: 'Grapefruit · Honey' },
-      { n: 'Bonsai 2026 440ml — 4.8% Hazy Pale',                  p: '£5',    diet: ['vg','lf'],      adj: 'Papaya Pine' },
-      { n: 'Doses 440ml — 5.1% German Pilsner',                   p: '£4.75', diet: ['vg','lf'],      adj: 'Crisp Floral', award: true },
-      { n: 'Dripping Pitch 440ml — 6.7% West Coast IPA',          p: '£6',    diet: ['vg','lf'],      adj: 'Bold Bitter', award: true },
-      { n: 'Dropped Limb 375ml — 7% Rustic Saison w/Verdant',     p: '£7.50', diet: ['vg','lf'],      adj: 'Oak Funk' },
-      { n: 'Ebb + Flow 440ml — 4.8% American Stout',              p: '£4.50', diet: ['vg','lf'],      adj: 'Coffee Fruitcake', award: true },
-      { n: 'On The Ball 440ml — 4.2% Charity Lager',              p: '£4.74', diet: ['vg','gf','lf'], adj: 'Refreshing Light' },
-      { n: "Rockin' Chairs 440ml — 4.3% West Coast Pale w/Polly's", p: '£5',  diet: ['vg','lf'],      adj: 'Pine Bitter' },
-      { n: 'Shine #2 440ml — 4.8% Krush Hopped Pale',             p: '£5',    diet: ['vg','lf'],      adj: 'Mandarin Guava' },
-      { n: 'Slurp! 440ml — 3% Table Pale',                        p: '£4',    diet: ['vg','lf'],      adj: 'Peach Fresh' },
-      { n: 'Strataberry Fields 440ml — 4% Fruited Grisette',      p: '£5.50', diet: ['vg','lf'],      adj: 'Spritzy Tart' },
-      { n: 'Sweeping Coast 440ml — 4.8% West Coast Pale',         p: '£5',    diet: ['vg','lf'],      adj: 'Bright Fresh', award: true },
-      { n: 'Tracing Time 375ml — 8.6% Imperial Belgian Stout',    p: '£8.50', diet: ['vg','lf'],      adj: 'Liquorice · Tart · Apricot', award: true },
-      { n: 'Truck 440ml — 6% New England IPA',                    p: '£6',    diet: ['vg','lf'],      adj: 'Citrus Peach' },
-      { n: 'Vermillion Sky 375ml — 8.4% Dark Cherry Sour',        p: '£8.50', diet: ['vg','lf'],      adj: 'Cherry Tart' },
+      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',            p: '£5.50', diet: ['vg','lf'],      adj: 'Tropical Juicy',        award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Good Times 440ml — 4.2% American Light Lager',          p: '£4.25', diet: ['vg','gf','lf'], adj: 'Crisp Sweet',            award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Snapshot 440ml — 4.5% Session IPA',                     p: '£5',    diet: ['vg','lf'],      adj: 'Mango Peach',                         bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Another Day Done 440ml — 4.4% Juicy Pale',              p: '£5',    diet: ['vg','lf'],      adj: 'Juicy Mango',                          bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Adventure Defender 440ml — 4.5% Session IPA',           p: '£5',    diet: ['vg','lf'],      adj: 'Tropical Zesty',                       bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Bet The Farm 440ml — 4.5% Continental Pale',            p: '£5',    diet: ['vg','lf'],      adj: 'Crisp Dry',             award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Board Games 440ml — 3.4% Pale Ale',                     p: '£4',    diet: ['vg','lf'],      adj: 'Grapefruit · Honey',                   bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Bonsai 2026 440ml — 4.8% Hazy Pale',                    p: '£5',    diet: ['vg','lf'],      adj: 'Papaya Pine',                          bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Doses 440ml — 5.1% German Pilsner',                     p: '£4.75', diet: ['vg','lf'],      adj: 'Crisp Floral',          award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Dripping Pitch 440ml — 6.7% West Coast IPA',            p: '£6',    diet: ['vg','lf'],      adj: 'Bold Bitter',           award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Dropped Limb 375ml — 7% Rustic Saison w/Verdant',       p: '£7.50', diet: ['vg','lf'],      adj: 'Oak Funk',                             bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Ebb + Flow 440ml — 4.8% American Stout',                p: '£4.50', diet: ['vg','lf'],      adj: 'Coffee Fruitcake',      award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'On The Ball 440ml — 4.2% Charity Lager',                p: '£4.74', diet: ['vg','gf','lf'], adj: 'Refreshing Light',                      bars: ['Taproom Bar','Horsebox'] },
+      { n: "Rockin' Chairs 440ml — 4.3% West Coast Pale w/Polly's", p: '£5',    diet: ['vg','lf'],      adj: 'Pine Bitter',                          bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Shine #2 440ml — 4.8% Krush Hopped Pale',               p: '£5',    diet: ['vg','lf'],      adj: 'Mandarin Guava',                        bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Slurp! 440ml — 3% Table Pale',                          p: '£4',    diet: ['vg','lf'],      adj: 'Peach Fresh',                          bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Strataberry Fields 440ml — 4% Fruited Grisette',        p: '£5.50', diet: ['vg','lf'],      adj: 'Spritzy Tart',                         bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Sweeping Coast 440ml — 4.8% West Coast Pale',           p: '£5',    diet: ['vg','lf'],      adj: 'Bright Fresh',          award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Tracing Time 375ml — 8.6% Imperial Belgian Stout',      p: '£8.50', diet: ['vg','lf'],      adj: 'Liquorice · Tart · Apricot', award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Truck 440ml — 6% New England IPA',                      p: '£6',    diet: ['vg','lf'],      adj: 'Citrus Peach',                         bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Vermillion Sky 375ml — 8.4% Dark Cherry Sour',          p: '£8.50', diet: ['vg','lf'],      adj: 'Cherry Tart',                          bars: ['Taproom Bar','Horsebox'] },
     ]
   },
   {
