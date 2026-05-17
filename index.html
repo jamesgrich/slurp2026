@@ -306,6 +306,16 @@
   .empty-list { text-align: center; padding: 60px 24px; color: var(--muted); }
   .empty-list .empty-icon { font-size: 3rem; margin-bottom: 12px; }
   .empty-list p { font-size: 0.9rem; line-height: 1.5; }
+  .rtb-banner { display:flex; align-items:flex-start; gap:12px; margin:12px 12px 4px; padding:14px 16px; background:var(--card); border:1px solid var(--border); border-radius:14px; border-left:3px solid var(--green); }
+  .rtb-banner.rtb-done { border-left-color:var(--amber); background:rgba(232,162,58,0.08); }
+  .rtb-icon { font-size:1.6rem; flex-shrink:0; line-height:1; margin-top:2px; }
+  .rtb-text { display:flex; flex-direction:column; gap:3px; flex:1; min-width:0; }
+  .rtb-text strong { font-size:0.88rem; color:var(--text); }
+  .rtb-text span { font-size:0.78rem; color:var(--sub); }
+  .rtb-bar-wrap { width:100%; height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin-top:6px; }
+  .rtb-bar { height:100%; background:var(--green); border-radius:3px; transition:width 0.4s ease; }
+  .rtb-done .rtb-bar { background:var(--amber); }
+  .rtb-count { font-size:0.7rem !important; color:var(--muted) !important; margin-top:2px; }
   .list-card { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px; }
   .list-card.tried-card { border-left: 3px solid var(--tried); opacity: 0.8; }
   .list-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
@@ -1433,6 +1443,28 @@ function renderMyList() {
     return;
   }
 
+  // ── RUN THE BOARD banner ──
+  const RTB_GOAL = 15;
+  const tried = triedCount();
+  const done  = tried >= RTB_GOAL;
+  const pct   = Math.min(100, Math.round((tried / RTB_GOAL) * 100));
+  const banner = document.createElement('div');
+  banner.className = 'rtb-banner' + (done ? ' rtb-done' : '');
+  banner.innerHTML = done
+    ? `<div class="rtb-icon">🎉</div>
+       <div class="rtb-text">
+         <strong>You've Run The Board!</strong>
+         <span>Head to <strong>Farmers Bar</strong> to <strong>Spin to Win</strong> your prize!</span>
+       </div>`
+    : `<div class="rtb-icon">🎡</div>
+       <div class="rtb-text">
+         <strong>Run The Board — Rate 15 Beers — Spin to Win</strong>
+         <span>Rate ${RTB_GOAL - tried} more beer${RTB_GOAL - tried === 1 ? '' : 's'} to unlock your spin</span>
+         <div class="rtb-bar-wrap"><div class="rtb-bar" style="width:${pct}%"></div></div>
+         <span class="rtb-count">${tried} / ${RTB_GOAL} beers tried</span>
+       </div>`;
+  container.appendChild(banner);
+
   const groups = new Map();
   listBeers.forEach(beer => {
     const key = beer.bar + ' — ' + beer.b;
@@ -1654,7 +1686,9 @@ const SCROLL_HIDE_FILTERS = true;
   const el = document.getElementById('global-filters');
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
+    const atBottom = (window.innerHeight + y) >= document.body.scrollHeight - 10;
     if (y < 60) el.classList.remove('filters-hidden');
+    else if (atBottom) { /* keep current state at bottom — no flicker */ }
     else if (y > lastY + 4) el.classList.add('filters-hidden');
     else if (y < lastY - 4) el.classList.remove('filters-hidden');
     lastY = y;
