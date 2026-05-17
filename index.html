@@ -576,6 +576,15 @@ const SECTIONS = [
     ]
   },
   {
+    id: 'pitch', icon: '⛺️', title: 'Pitch Donation',
+    note: 'Pay in Taproom',
+    bars: ['Campers Bar'],
+    food: false,
+    items: [
+      { n: 'Pitch Donation', p: '£10', diet: [] },
+    ]
+  },
+  {
     id: 'cocktails', icon: '🍸', title: 'Cocktails + Mocktails',
     bars: ['Horsebox'],
     food: true,
@@ -706,7 +715,8 @@ const SECTIONS = [
       { n: 'Slurp! Cap',                         p: '£25' },
       { n: 'Starburst Cap',                      p: '£25' },
       { n: 'Hop Patch Cap',                      p: '£25' },
-      { n: 'Hop + 2026 Breweries Sweater',       p: '£30' },
+      { n: 'Hop + 2026 Breweries Sweater',                              p: '£30' },
+      { n: '🎟️ Raffle Tickets — daily draws + big draw Monday 4pm',    p: '£5 / 3 for £10' },
     ]
   },
 ];
@@ -742,6 +752,7 @@ const BAR_CHIPS = [
   { label: 'Farmers',  value: 'Farmers Bar' },
   { label: 'Horsebox', value: 'Horsebox' },
   { label: 'Taproom',  value: 'Taproom Bar' },
+  { label: 'Campers',  value: 'Campers Bar' },
 ];
 
 const DIET_CHIPS = [
@@ -759,6 +770,7 @@ const STYLE_CHIPS = [
   { label: 'Lager',       value: 'lager' },
   { label: 'Dark',        value: 'dark' },
   { label: 'Sour / Wild', value: 'wild-sour' },
+  { label: 'Cider',       value: 'cider' },
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -774,6 +786,7 @@ function cat(style, tags) {
   if (/lager|pils|pilsner|radler|helles/.test(s)) return 'lager';
   if (tags.includes('wild') || /foeder|wild|saison|barrel/.test(s)) return 'wild';
   if (tags.includes('cask')) return 'cask';
+  if (/cider/.test(s)) return 'cider';
   if (tags.includes('nolow') || tags.includes('af')) return 'nolow';
   return '';
 }
@@ -794,7 +807,9 @@ function dietMatch(itemDiet, activeDiet) {
 }
 
 function beerPassesFilters(beer) {
-  if (activeBar !== '' && beer.bar !== activeBar) return false;
+  if (activeBar === 'Campers Bar') {
+    if (beer.bar !== 'Farmers Bar' && beer.bar !== 'Taproom Bar') return false;
+  } else if (activeBar !== '' && beer.bar !== activeBar) return false;
   if (activeDiet === 'gf' && !beer.t.includes('gf')) return false;
   if (activeDiet === 'af' && !beer.t.includes('af') && !beer.t.includes('nolow') && beer.abv > 1.0) return false;
   if (activeDiet === 'vg' && !beer.diet.includes('vg')) return false;
@@ -1119,8 +1134,8 @@ function renderBeerList() {
   updateTabCounts();
 
   // Append Beer Cans + AF sections below tap beers
-  const showBeercans = activeStyle === '' && (activeBar === '' || activeBar === 'Taproom Bar' || activeBar === 'Horsebox');
-  const showAF = activeStyle === '' && (activeBar === '' || ['Farmers Bar','Taproom Bar','Horsebox'].includes(activeBar));
+  const showBeercans = activeStyle === '' && (activeBar === '' || activeBar === 'Taproom Bar' || activeBar === 'Horsebox' || activeBar === 'Campers Bar');
+  const showAF = activeStyle === '' && (activeBar === '' || ['Farmers Bar','Taproom Bar','Horsebox','Campers Bar'].includes(activeBar));
 
   ['beercans', 'af'].forEach(secId => {
     const show = secId === 'beercans' ? showBeercans : showAF;
