@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Slurp! 2026 — Duration Brewing</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#52c97a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Slurp! 2026">
 <style>
   :root {
     --bg: #0e1710;
@@ -370,6 +375,10 @@
     .tab-btn { font-size: 0.74rem; }
   }
   /* ── PASSWORD GATE ── */
+
+  /* ── SCROLL-HIDE FILTERS — set SCROLL_HIDE_FILTERS=false in JS to revert ── */
+  .global-filters { transition: max-height 0.28s ease, opacity 0.22s ease, padding 0.28s ease; max-height: 400px; overflow: hidden; }
+  .global-filters.filters-hidden { max-height: 0 !important; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; }
 </style>
 </head>
 <body>
@@ -870,10 +879,14 @@ function buildBarChips() {
     btn.textContent = chip.label;
     btn.addEventListener('click', () => {
       activeBar = chip.value;
+      const u = new URL(location.href);
+      chip.value ? u.searchParams.set('bar', chip.label.toLowerCase()) : u.searchParams.delete('bar');
+      history.replaceState(null, '', u);
       buildBarChips();
       renderBeerList();
       renderWhatsOn();
       renderSnacksMerch();
+      updateTabCounts();
     });
     row.appendChild(btn);
   });
@@ -893,6 +906,7 @@ function buildDietChips() {
       renderBeerList();
       renderWhatsOn();
       renderSnacksMerch();
+      updateTabCounts();
     });
     row.appendChild(btn);
   });
@@ -1089,6 +1103,8 @@ function renderBeerList() {
     });
   });
 
+  updateTabCounts();
+
   // Append Beer Cans + AF sections below tap beers
   const showBeercans = activeStyle === '' && (activeBar === '' || activeBar === 'Taproom Bar' || activeBar === 'Horsebox');
   const showAF = activeStyle === '' && (activeBar === '' || ['Farmers Bar','Taproom Bar','Horsebox'].includes(activeBar));
@@ -1247,6 +1263,7 @@ function renderSnacksMerch() {
     });
     container.appendChild(wrap);
   });
+  updateTabCounts();
 }
 
 function renderWhatsOn() {
@@ -1364,6 +1381,7 @@ function renderWhatsOn() {
     el.textContent = 'Nothing matches your current filters.';
     container.appendChild(el);
   }
+  updateTabCounts();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1512,7 +1530,7 @@ function switchTab(tabName) {
   if (tabName === 'merch') renderSnacksMerch();
 }
 document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
-document.getElementById('search-input').addEventListener('input', (e) => { searchQ = e.target.value.trim(); renderBeerList(); renderWhatsOn(); });
+document.getElementById('search-input').addEventListener('input', (e) => { searchQ = e.target.value.trim(); renderBeerList(); renderWhatsOn(); renderSnacksMerch(); updateTabCounts(); });
 
 // Set the CSS custom property for global filter bar height offset
 function setHeaderOffset() {
@@ -1523,8 +1541,77 @@ window.addEventListener('resize', setHeaderOffset);
 setHeaderOffset();
 
 // ═══════════════════════════════════════════════════════
+// CROSS-TAB SEARCH RESULT COUNTS
+// ═══════════════════════════════════════════════════════
+
+function updateTabCounts() {
+  const q = searchQ.toLowerCase();
+  const tabs = {
+    beers:   document.querySelector('.tab-btn[data-tab="beers"]'),
+    whatson: document.querySelector('.tab-btn[data-tab="whatson"]'),
+    merch:   document.querySelector('.tab-btn[data-tab="merch"]'),
+  };
+  if (!q) {
+    if (tabs.beers)   tabs.beers.textContent   = 'BEER + CIDER';
+    if (tabs.whatson) tabs.whatson.textContent  = 'OTHER DRINKS';
+    if (tabs.merch)   tabs.merch.innerHTML      = 'MERCH + SNACKS';
+    return;
+  }
+  // Count beer + cider results
+  const beerCount = BEERS.filter(beerPassesFilters).length
+    + (SECTIONS.find(s => s.id === 'beercans')?.items.filter(i => i.n.toLowerCase().includes(q)).length ?? 0)
+    + (SECTIONS.find(s => s.id === 'af')?.items.filter(i => i.n.toLowerCase().includes(q)).length ?? 0);
+  // Count other drinks results
+  let otherCount = 0;
+  SECTIONS.forEach(s => {
+    if (['merch','snacks','beercans','af'].includes(s.id)) return;
+    if (activeBar && !s.bars.includes(activeBar)) return;
+    otherCount += s.items.filter(i => i.n.toLowerCase().includes(q)).length;
+  });
+  // Count snacks + merch results
+  let snackCount = 0;
+  ['snacks','merch'].forEach(id => {
+    const s = SECTIONS.find(x => x.id === id);
+    if (s) snackCount += s.items.filter(i => i.n && i.n.toLowerCase().includes(q)).length;
+  });
+  if (tabs.beers)   tabs.beers.textContent   = beerCount   ? `BEER + CIDER (${beerCount})`   : 'BEER + CIDER';
+  if (tabs.whatson) tabs.whatson.textContent  = otherCount  ? `OTHER DRINKS (${otherCount})`  : 'OTHER DRINKS';
+  if (tabs.merch)   tabs.merch.textContent    = snackCount  ? `MERCH + SNACKS (${snackCount})`: 'MERCH + SNACKS';
+}
+
+// ── SCROLL-HIDE FILTERS — flip to false to revert ──────────────────────────
+const SCROLL_HIDE_FILTERS = true;
+(function() {
+  if (!SCROLL_HIDE_FILTERS) return;
+  let lastY = 0;
+  const el = document.getElementById('global-filters');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 60) el.classList.remove('filters-hidden');
+    else if (y > lastY + 4) el.classList.add('filters-hidden');
+    else if (y < lastY - 4) el.classList.remove('filters-hidden');
+    lastY = y;
+  }, { passive: true });
+})();
+// ────────────────────────────────────────────────────────────────────────────
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/slurp2026/sw.js').catch(() => {}));
+}
+
+// ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
+
+// Pre-select bar from URL ?bar=farmers or ?bar=boom etc.
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const b = (params.get('bar') || '').toLowerCase().trim();
+  if (b) {
+    const match = BAR_CHIPS.find(c => c.label.toLowerCase() === b || c.value.toLowerCase() === b || c.value.toLowerCase().startsWith(b));
+    if (match) activeBar = match.value;
+  }
+})();
 
 buildBarChips();
 buildDietChips();

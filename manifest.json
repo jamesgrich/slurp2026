@@ -1,0 +1,14 @@
+{
+  "name": "Slurp! 2026 — Duration Brewing Festival",
+  "short_name": "Slurp! 2026",
+  "description": "Your guide to Slurp! 2026 — beers, ciders and more from Duration Brewing Festival.",
+  "start_url": "/slurp2026/",
+  "scope": "/slurp2026/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1710",
+  "theme_color": "#52c97a",
+  "icons": [
+    { "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
