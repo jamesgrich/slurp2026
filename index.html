@@ -1019,10 +1019,10 @@ function barAbbr(v) {
 }
 
 const TIER_PRICES = {
-  A: { sizes: 'Third · Half · Pint', prices: '£3 · £5 · £9' },
+  A: { sizes: 'Third · Half · Pint', prices: '£2 · £3.50 · £6' },
   B: { sizes: 'Third · Half · Pint', prices: '£2.50 · £4 · £7.50' },
-  C: { sizes: 'Third · Half · Pint', prices: '£2 · £3.50 · £6' },
-  D: { sizes: 'Half · Pint',         prices: '£2.50 · £5' },
+  C: { sizes: 'Third · Half · Pint', prices: '£3 · £5 · £9' },
+  D: { sizes: 'Third · Half · Pint', prices: '£2 · £3 · £5.50' },
 };
 
 const BEER_TIERS = {
@@ -1090,8 +1090,8 @@ function renderBeerList() {
   });
 
   // Append Beer Cans + AF sections below tap beers
-  const showBeercans = activeBar === '' || activeBar === 'Taproom Bar' || activeBar === 'Horsebox';
-  const showAF = activeBar === '' || ['Farmers Bar','Taproom Bar','Horsebox'].includes(activeBar);
+  const showBeercans = activeStyle === '' && (activeBar === '' || activeBar === 'Taproom Bar' || activeBar === 'Horsebox');
+  const showAF = activeStyle === '' && (activeBar === '' || ['Farmers Bar','Taproom Bar','Horsebox'].includes(activeBar));
 
   ['beercans', 'af'].forEach(secId => {
     const show = secId === 'beercans' ? showBeercans : showAF;
