@@ -70,13 +70,14 @@
   .tab-btn .badge {
     background: var(--green);
     color: #0e1710;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 800;
-    border-radius: 8px;
-    padding: 1px 5px;
-    min-width: 18px;
+    border-radius: 6px;
+    padding: 1px 4px;
+    min-width: 14px;
     text-align: center;
     display: inline-block;
+    flex-shrink: 0;
   }
 
   /* ── GLOBAL FILTER BAR ── */
@@ -387,7 +388,7 @@
   /* ── PASSWORD GATE ── */
 
   /* ── SCROLL-HIDE FILTERS — set SCROLL_HIDE_FILTERS=false in JS to revert ── */
-  .global-filters { transition: max-height 0.28s ease, opacity 0.22s ease, padding 0.28s ease; max-height: 400px; overflow: hidden; }
+  .global-filters { transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1), padding 0.35s cubic-bezier(0.4,0,0.2,1); max-height: 400px; overflow: hidden; }
   .global-filters.filters-hidden { max-height: 0 !important; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; }
 </style>
 </head>
@@ -842,6 +843,9 @@ function setRating(id, axis, val) {
   if (!state.list[id]) return;
   if (!state.list[id].ratings) state.list[id].ratings = {};
   state.list[id].ratings[axis] = val;
+  if (val > 0 && !state.list[id].tried) {
+    state.list[id].tried = true;
+  }
   saveState();
 }
 function setNotes(id, text) {
@@ -1622,9 +1626,9 @@ function renderMyList() {
 
 function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabName));
-  // Map tab keys to panel ids
   const panelId = tabName === 'merch' ? 'panel-snacks-merch' : `panel-${tabName}`;
   document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === panelId));
+  document.getElementById('global-filters').style.display = tabName === 'mylist' ? 'none' : '';
   if (tabName === 'mylist') renderMyList();
   if (tabName === 'merch') renderSnacksMerch();
 }
@@ -1689,8 +1693,8 @@ const SCROLL_HIDE_FILTERS = true;
     const atBottom = (window.innerHeight + y) >= document.body.scrollHeight - 10;
     if (y < 60) el.classList.remove('filters-hidden');
     else if (atBottom) { /* keep current state at bottom — no flicker */ }
-    else if (y > lastY + 4) el.classList.add('filters-hidden');
-    else if (y < lastY - 4) el.classList.remove('filters-hidden');
+    else if (y > lastY + 8) el.classList.add('filters-hidden');
+    else if (y < lastY - 8) el.classList.remove('filters-hidden');
     lastY = y;
   }, { passive: true });
 })();
