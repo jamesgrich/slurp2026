@@ -1176,12 +1176,34 @@ function renderBeerList() {
         left.appendChild(meta);
       }
       row.appendChild(left);
+      const right = document.createElement('div');
+      right.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;padding-left:8px';
       if (item.p) {
         const priceEl = document.createElement('div');
         priceEl.className = 'wo-price';
         priceEl.textContent = item.p;
-        row.appendChild(priceEl);
+        right.appendChild(priceEl);
       }
+      const itemId = secId + '-' + sec.items.indexOf(item);
+      const listed = !!state.list[itemId];
+      row.className = 'wo-item' + (listed ? ' on-list' : '');
+      const btn = document.createElement('button');
+      btn.className = 'add-btn' + (listed ? ' on-list' : '');
+      btn.textContent = listed ? '✓' : '+';
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!state.list[itemId]) {
+          state.list[itemId] = { name: item.n, price: item.p || '' };
+          toast('Added: ' + item.n);
+        } else {
+          toast('Already on your list!', 'info');
+        }
+        saveState();
+        updateStats();
+        renderBeerList();
+      });
+      right.appendChild(btn);
+      row.appendChild(right);
       container.appendChild(row);
     });
   });
@@ -1392,11 +1414,22 @@ function renderMyList() {
   const container = document.getElementById('mylist-content');
   container.innerHTML = '';
 
-  const listIds  = Object.keys(state.list).map(Number);
-  const listBeers = BEERS.filter(b => listIds.includes(b.id));
+  const allKeys   = Object.keys(state.list);
+  const beerIds   = allKeys.map(Number).filter(n => !isNaN(n));
+  const listBeers = BEERS.filter(b => beerIds.includes(b.id));
 
-  if (listBeers.length === 0) {
-    container.innerHTML = `<div class="empty-list"><div class="empty-icon">🌿</div><p>Your list is empty.<br>Head to <strong>Beers</strong> and tap <strong>+</strong> to start adding.</p></div>`;
+  // Can/AF items stored with string keys like 'beercans-0', 'af-2'
+  const canItems = [];
+  ['beercans','af'].forEach(secId => {
+    const sec = SECTIONS.find(s => s.id === secId);
+    if (!sec) return;
+    sec.items.forEach((item, i) => {
+      if (state.list[secId + '-' + i]) canItems.push({ secId, item, key: secId + '-' + i });
+    });
+  });
+
+  if (listBeers.length === 0 && canItems.length === 0) {
+    container.innerHTML = `<div class="empty-list"><div class="empty-icon">🌿</div><p>Your list is empty.<br>Head to <strong>Beer + Cider</strong> and tap <strong>+</strong> to start adding.</p></div>`;
     return;
   }
 
@@ -1515,6 +1548,40 @@ function renderMyList() {
     });
     container.appendChild(groupWrap);
   });
+
+  // Render can / AF items
+  if (canItems.length > 0) {
+    const canHdr = document.createElement('div');
+    canHdr.className = 'bar-section-header';
+    canHdr.style.fontSize = '0.72rem';
+    canHdr.textContent = 'Cans + Bottles';
+    container.appendChild(canHdr);
+    canItems.forEach(({ item, key }) => {
+      const card = document.createElement('div');
+      card.className = 'list-card';
+      const cardHdr = document.createElement('div');
+      cardHdr.className = 'list-card-header';
+      const titleWrap = document.createElement('div');
+      titleWrap.className = 'list-card-title';
+      titleWrap.innerHTML = `<div class="list-name">${escHtml(item.n)}</div>${item.p ? `<div class="list-sub abv">${escHtml(item.p)}</div>` : ''}`;
+      cardHdr.appendChild(titleWrap);
+      const actions = document.createElement('div');
+      actions.className = 'list-actions';
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = 'Remove';
+      removeBtn.addEventListener('click', () => {
+        delete state.list[key];
+        saveState();
+        toast('Removed: ' + item.n, 'info');
+        updateStats(); renderBeerList(); renderMyList();
+      });
+      actions.appendChild(removeBtn);
+      cardHdr.appendChild(actions);
+      card.appendChild(cardHdr);
+      container.appendChild(card);
+    });
+  }
 }
 
 // ═══════════════════════════════════════════════════════
