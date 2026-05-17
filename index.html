@@ -1178,12 +1178,6 @@ function renderBeerList() {
       row.appendChild(left);
       const right = document.createElement('div');
       right.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;padding-left:8px';
-      if (item.p) {
-        const priceEl = document.createElement('div');
-        priceEl.className = 'wo-price';
-        priceEl.textContent = item.p;
-        right.appendChild(priceEl);
-      }
       const itemId = secId + '-' + sec.items.indexOf(item);
       const listed = !!state.list[itemId];
       row.className = 'wo-item' + (listed ? ' on-list' : '');
@@ -1203,6 +1197,12 @@ function renderBeerList() {
         renderBeerList();
       });
       right.appendChild(btn);
+      if (item.p) {
+        const priceEl = document.createElement('div');
+        priceEl.className = 'wo-price';
+        priceEl.textContent = item.p;
+        right.appendChild(priceEl);
+      }
       row.appendChild(right);
       container.appendChild(row);
     });
@@ -1687,5 +1687,8 @@ renderBeerList();
 renderWhatsOn();
 updateStats();
 </script>
+<footer style="text-align:center;padding:20px 16px 32px;font-size:0.72rem;color:var(--muted)">
+  Built by <a href="https://dryhop.digital" target="_blank" rel="noopener noreferrer" style="color:var(--sub);text-decoration:none">dryhop.digital</a>
+</footer>
 </body>
 </html>
