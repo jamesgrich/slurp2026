@@ -1255,8 +1255,8 @@ function renderWhatsOn() {
   let anyShown = false;
 
   SECTIONS.forEach(sec => {
-    // Merch + Snacks rendered in their own tab
-    if (sec.id === 'merch' || sec.id === 'snacks') return;
+    // Merch + Snacks in their own tab; Beer Cans + AF in Beer + Cider tab
+    if (sec.id === 'merch' || sec.id === 'snacks' || sec.id === 'beercans' || sec.id === 'af') return;
     // Bar filter
     if (activeBar !== '' && !sec.bars.includes(activeBar)) return;
 
