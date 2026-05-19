@@ -684,7 +684,7 @@ const SECTIONS = [
   },
   {
     id: 'snacks', icon: '🍫', title: 'Snacks + Sweets',
-    bars: ['Taproom Bar', 'Horsebox'],
+    bars: ['Farmers Bar', 'Taproom Bar', 'Horsebox'],
     food: true,
     items: [
       { n: 'Mini Cheddars',                         p: '£1',    diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
@@ -778,7 +778,7 @@ const STYLE_CHIPS = [
   { label: 'Pale / IPA',  value: 'pale-ipa' },
   { label: 'Lager',       value: 'lager' },
   { label: 'Dark',        value: 'dark' },
-  { label: 'Sour / Wild', value: 'wild-sour' },
+  { label: 'Sour',        value: 'wild-sour' },
   { label: 'Cider',       value: 'cider' },
 ];
 
@@ -1012,7 +1012,7 @@ function makeBeerCard(beer, container) {
   else if (beer.keg === 2)                        badgeRow.appendChild(makePill('Keg 2', 'pill-keg2'));
 
   if (beer.dark)                      badgeRow.appendChild(makePill('Dark', 'pill-dark'));
-  if (beer.bonus)                     badgeRow.appendChild(makePill('Bonus Keg', 'pill-bonus'));
+  if (beer.bonus)                     badgeRow.appendChild(makePill('BONUS KEG', 'pill-bonus'));
   if (beer.t.includes('gf'))          badgeRow.appendChild(makePill('GF', 'pill-gf'));
   if (beer.t.includes('af'))          badgeRow.appendChild(makePill('AF', 'pill-af'));
   if (beer.t.includes('cask'))        badgeRow.appendChild(makePill('Cask', 'pill-cask'));
@@ -1263,12 +1263,17 @@ function renderSnacksMerch() {
   ['merch', 'snacks'].forEach(secId => {
     const sec = SECTIONS.find(s => s.id === secId);
     if (!sec) return;
+    if (activeBar !== '' && !sec.bars.includes(activeBar)) return;
 
-    // Apply dietary filter to snacks (food section)
     let items = sec.items;
+    // Item-level bar filter (items with per-item bars array)
+    if (activeBar !== '') {
+      items = items.filter(item => !item.bars || item.bars.includes(activeBar));
+    }
     if (sec.food && activeDiet) {
       items = items.filter(item => !item.diet || dietMatch(item.diet, activeDiet));
     }
+    if (items.length === 0) return;
 
     const wrap = document.createElement('div');
     wrap.className = 'whats-on-section';
@@ -1714,16 +1719,25 @@ function updateTabCounts() {
 const SCROLL_HIDE_FILTERS = true;
 (function() {
   if (!SCROLL_HIDE_FILTERS) return;
-  let lastY = 0;
+  let lastY = 0, ticking = false, transitioning = false;
   const el = document.getElementById('global-filters');
+  el.addEventListener('transitionend', () => { transitioning = false; });
   window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const atBottom = (window.innerHeight + y) >= document.body.scrollHeight - 10;
-    if (y < 60) el.classList.remove('filters-hidden');
-    else if (atBottom) { /* keep current state at bottom — no flicker */ }
-    else if (y > lastY + 8) el.classList.add('filters-hidden');
-    else if (y < lastY - 8) el.classList.remove('filters-hidden');
-    lastY = y;
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      if (transitioning) return;
+      const y = window.scrollY;
+      const atBottom = (window.innerHeight + y) >= document.body.scrollHeight - 20;
+      if (y < 60) {
+        el.classList.remove('filters-hidden');
+      } else if (!atBottom) {
+        if (y > lastY + 12) { transitioning = true; el.classList.add('filters-hidden'); }
+        else if (y < lastY - 12) { transitioning = true; el.classList.remove('filters-hidden'); }
+      }
+      lastY = y;
+    });
   }, { passive: true });
 })();
 // ────────────────────────────────────────────────────────────────────────────
