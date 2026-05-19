@@ -224,6 +224,7 @@
   .pill-wild   { background: rgba(56,189,248,0.12); color: var(--wild); border-color: rgba(56,189,248,0.25); }
   .pill-nolow  { background: rgba(232,162,58,0.10); color: var(--amber); border-color: rgba(232,162,58,0.2); }
   .pill-dark   { background: rgba(180,100,40,0.15); color: #d4956a; border-color: rgba(180,100,40,0.3); }
+  .pill-bonus  { background: rgba(82,201,122,0.15); color: var(--green); border-color: rgba(82,201,122,0.3); font-weight: 700; }
   .pill-collab { background: rgba(232,162,58,0.10); color: var(--amber); border-color: rgba(232,162,58,0.2); }
   .pill-keg1   { background: rgba(82,201,122,0.10); color: var(--green); border-color: rgba(82,201,122,0.2); }
   .pill-keg2   { background: rgba(232,162,58,0.15); color: var(--amber); border-color: rgba(232,162,58,0.3); }
@@ -302,6 +303,7 @@
   .wo-diet-pill.lf { background: rgba(14,165,233,0.12); color: #38bdf8; border-color: rgba(14,165,233,0.25); }
   .wo-item-bars { font-size: 0.65rem; color: var(--green); margin-top: 1px; font-weight: 600; letter-spacing: 0.02em; }
   .pill-loc { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 700; }
+  .pill-tap { background: rgba(192,132,252,0.15); color: var(--cask); border-color: rgba(192,132,252,0.3); font-weight: 700; }
   .bar-avail { font-size: 0.6rem; color: var(--muted); }
 
   /* ── MY LIST ── */
@@ -402,10 +404,10 @@
     <span class="header-stats" id="header-stats"></span>
   </div>
   <div class="tabs">
+    <button class="tab-btn" data-tab="mylist">My List</button>
     <button class="tab-btn active" data-tab="beers">BEER + CIDER</button>
     <button class="tab-btn" data-tab="whatson">OTHER DRINKS</button>
     <button class="tab-btn" data-tab="merch">MERCH + SNACKS</button>
-    <button class="tab-btn" data-tab="mylist">My List</button>
   </div>
 </header>
 
@@ -542,6 +544,13 @@ const BEERS = [
   // ── HORSEBOX ──
   {id:61, tap:41, keg:1, b:'Duration',        n:'Adventure Defender',      s:'Session IPA',           abv:4.5, bar:'Horsebox',             t:[],            diet:['vg','lf'],       co:null,                dark:false, collab:false, adj:'Tropical · Zesty'},
   {id:62, tap:42, keg:1, b:'Duration',        n:"Cuttin' Grass",           s:'Italian Pilsner',       abv:4.5, bar:'Horsebox',             t:[],            diet:['vg','lf'],       co:null,                dark:false, collab:false, award:true,  adj:'Crisp · Lemon'},
+
+  // ── BONUS KEGS ──
+  {id:63, tap:4,  keg:3, b:'Duration',        n:'Pathfinder',              s:'Pale Ale',              abv:4.7, bar:'Boom Bar',            t:[],            diet:['vg','lf'],       co:'Northstowe Tap',    dark:false, collab:true,  bonus:true,  adj:'Tropical · Soft'},
+  {id:64, tap:5,  keg:3, b:'Duration',        n:'Goatfell',                s:'Pale Ale',              abv:5.2, bar:'Boom Bar',            t:[],            diet:['vg','lf'],       co:'Tap Social',        dark:false, collab:true,  bonus:true,  adj:'Floral · Peach'},
+  {id:65, tap:9,  keg:3, b:'Burnt Mill',      n:'Glow',                    s:'Radler',                abv:2.0, bar:'Boom Bar',            t:['nolow'],     diet:['vg','lf'],       co:null,                dark:false, collab:false, bonus:true,  adj:'Pineapple · Grapefruit'},
+  {id:66, tap:31, keg:2, b:'All Day Brewing', n:'The Gambler',             s:'American Amber Ale',    abv:4.6, bar:'Farmers Bar',         t:['cask'],      diet:['vg','lf'],       co:null,                dark:false, collab:false, bonus:true,  adj:'Rich · Amber'},
+  {id:67, tap:38, keg:2, b:'Duration',        n:'Board Games',             s:'Table Pale',            abv:3.4, bar:'Taproom Bar',         t:[],            diet:['vg','lf'],       co:null,                dark:false, collab:false, bonus:true,  adj:'Honey · Crisp'},
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -563,7 +572,7 @@ const SECTIONS = [
       { n: 'Cloudwater Margarita Gose 440ml — 0.5%',               p: '£5', diet: ['vg','af','lf'],      bars: ['Farmers Bar', 'Horsebox'] },
       { n: 'Cloudwater Lychee + Watermelon Sour 440ml — 0.5%',     p: '£5', diet: ['vg','af','lf'],      bars: ['Farmers Bar', 'Horsebox'], co: 'Bundobust' },
       { n: 'Cloudwater Kopra DDH Pale 440ml — 0.5%',               p: '£5', diet: ['vg','af','lf'],      bars: ['Farmers Bar', 'Horsebox'], co: 'Bundobust' },
-      { n: 'Guinness Zero AF Stout 440ml — 0.0%',                  p: '£5', diet: ['vg','af','lf'],      bars: ['Farmers Bar', 'Taproom Bar', 'Horsebox'] },
+      { n: 'Guinness Zero AF Stout 440ml — 0.0%',                  p: '£5', diet: ['vg','af','lf'],      bars: ['Farmers Bar', 'Taproom Bar', 'Horsebox'], dark: true },
     ]
   },
   {
@@ -592,7 +601,7 @@ const SECTIONS = [
       { n: 'Mocktails',                p: '£5 virgin',       diet: ['vg','gf','af'] },
       { n: 'Fruit Smooth-a-licious',   p: '£6.50 virgin',    diet: ['vg','gf','af'] },
       { n: 'Lilac + Blueberry Cooler', p: '£10 / £6 virgin', diet: ['vg','gf','af'] },
-      { n: 'Lynchburg Lemonade',       p: '£10 / £6 virgin', diet: ['vg','af'] },
+      { n: 'Lynchburg Lemonade',       p: '£10',             diet: ['vg'] },
       { n: 'Mimosa',                   p: '£8',              diet: ['vg','gf'] },
       { n: 'Bloody Mary',              p: '£10',             diet: ['gf'] },
       { n: 'Espresso Martini',         p: '£10',             diet: ['vg','gf'] },
@@ -610,27 +619,27 @@ const SECTIONS = [
     bars: ['Taproom Bar', 'Horsebox'],
     food: true,
     items: [
-      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',            p: '£5.50', diet: ['vg','lf'],      adj: 'Tropical Juicy',        award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',            p: '£6',    diet: ['vg','lf'],      adj: 'Tropical Juicy',        award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Good Times 440ml — 4.2% American Light Lager',          p: '£4.25', diet: ['vg','gf','lf'], adj: 'Crisp Sweet',            award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Snapshot 440ml — 4.5% Session IPA',                     p: '£5',    diet: ['vg','lf'],      adj: 'Mango Peach',                         bars: ['Taproom Bar','Horsebox'] },
       { n: 'Another Day Done 440ml — 4.4% Juicy Pale',              p: '£5',    diet: ['vg','lf'],      adj: 'Juicy Mango',                          bars: ['Taproom Bar','Horsebox'] },
       { n: 'Adventure Defender 440ml — 4.5% Session IPA',           p: '£5',    diet: ['vg','lf'],      adj: 'Tropical Zesty',                       bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Bet The Farm 440ml — 4.5% Continental Pale',            p: '£5',    diet: ['vg','lf'],      adj: 'Crisp Dry',             award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Bet The Farm 440ml — 4.5% Continental Pale',            p: '£4.50', diet: ['vg','lf'],      adj: 'Crisp Dry',             award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Board Games 440ml — 3.4% Pale Ale',                     p: '£4',    diet: ['vg','lf'],      adj: 'Grapefruit · Honey',                   bars: ['Taproom Bar','Horsebox'] },
       { n: 'Bonsai 2026 440ml — 4.8% Hazy Pale',                    p: '£5',    diet: ['vg','lf'],      adj: 'Papaya Pine',                          bars: ['Taproom Bar','Horsebox'] },
       { n: 'Doses 440ml — 5.1% German Pilsner',                     p: '£4.75', diet: ['vg','lf'],      adj: 'Crisp Floral',          award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Dripping Pitch 440ml — 6.7% West Coast IPA',            p: '£6',    diet: ['vg','lf'],      adj: 'Bold Bitter',           award: true, bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Dropped Limb 375ml — 7% Rustic Saison w/Verdant',       p: '£7.50', diet: ['vg','lf'],      adj: 'Oak Funk',                             bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Ebb + Flow 440ml — 4.8% American Stout',                p: '£4.50', diet: ['vg','lf'],      adj: 'Coffee Fruitcake',      award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Dropped Limb 375ml — 7% Rustic Saison w/Verdant',       p: '£7.50', diet: ['vg','lf'],      adj: 'Oak Funk',                             bars: ['Taproom Bar','Horsebox'], sour: true },
+      { n: 'Ebb + Flow 440ml — 4.8% American Stout',                p: '£4.50', diet: ['vg','lf'],      adj: 'Coffee Fruitcake',      award: true, bars: ['Taproom Bar','Horsebox'], dark: true },
       { n: 'On The Ball 440ml — 4.2% Charity Lager',                p: '£4.74', diet: ['vg','gf','lf'], adj: 'Refreshing Light',                      bars: ['Taproom Bar','Horsebox'] },
       { n: "Rockin' Chairs 440ml — 4.3% West Coast Pale w/Polly's", p: '£5',    diet: ['vg','lf'],      adj: 'Pine Bitter',                          bars: ['Taproom Bar','Horsebox'] },
       { n: 'Shine #2 440ml — 4.8% Krush Hopped Pale',               p: '£5',    diet: ['vg','lf'],      adj: 'Mandarin Guava',                        bars: ['Taproom Bar','Horsebox'] },
       { n: 'Slurp! 440ml — 3% Table Pale',                          p: '£4',    diet: ['vg','lf'],      adj: 'Peach Fresh',                          bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Strataberry Fields 440ml — 4% Fruited Grisette',        p: '£5.50', diet: ['vg','lf'],      adj: 'Spritzy Tart',                         bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Strataberry Fields 440ml — 4% Fruited Grisette',        p: '£5.50', diet: ['vg','lf'],      adj: 'Spritzy Tart',                         bars: ['Taproom Bar','Horsebox'], sour: true },
       { n: 'Sweeping Coast 440ml — 4.8% West Coast Pale',           p: '£5',    diet: ['vg','lf'],      adj: 'Bright Fresh',          award: true, bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Tracing Time 375ml — 8.6% Imperial Belgian Stout',      p: '£8.50', diet: ['vg','lf'],      adj: 'Liquorice · Tart · Apricot', award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Tracing Time 375ml — 8.6% Imperial Belgian Stout',      p: '£5',    diet: ['vg','lf'],      adj: 'Liquorice · Tart · Apricot', award: true, bars: ['Taproom Bar','Horsebox'], sour: true, dark: true },
       { n: 'Truck 440ml — 6% New England IPA',                      p: '£6',    diet: ['vg','lf'],      adj: 'Citrus Peach',                         bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Vermillion Sky 375ml — 8.4% Dark Cherry Sour',          p: '£8.50', diet: ['vg','lf'],      adj: 'Cherry Tart',                          bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Vermillion Sky 375ml — 8.4% Dark Cherry Sour',          p: '£8.50', diet: ['vg','lf'],      adj: 'Cherry Tart',                          bars: ['Taproom Bar','Horsebox'], sour: true, dark: true },
     ]
   },
   {
@@ -757,10 +766,10 @@ const BAR_CHIPS = [
 
 const DIET_CHIPS = [
   { label: 'All',          value: '',   cls: '' },
-  { label: 'Vegan',        value: 'vg', cls: 'active-diet-vg' },
-  { label: 'Veggie',       value: 'v',  cls: 'active-diet-v'  },
   { label: 'Gluten Free',  value: 'gf', cls: 'active-diet-gf' },
   { label: 'Alcohol Free', value: 'af', cls: 'active-diet-af' },
+  { label: 'Vegan',        value: 'vg', cls: 'active-diet-vg' },
+  { label: 'Veggie',       value: 'v',  cls: 'active-diet-v'  },
 ];
 
 const STYLE_CHIPS = [
@@ -997,17 +1006,18 @@ function makeBeerCard(beer, container) {
   badgeRow.className = 'badge-row';
 
   badgeRow.appendChild(makePill(barAbbr(beer.bar), 'pill-loc'));
-  badgeRow.appendChild(makePill('Tap #' + beer.tap, 'pill-loc'));
+  badgeRow.appendChild(makePill('Tap #' + beer.tap, 'pill-tap'));
 
   if (beer.keg === 1 && beer.bar === 'Boom Bar') badgeRow.appendChild(makePill('Keg 1', 'pill-keg1'));
   else if (beer.keg === 2)                        badgeRow.appendChild(makePill('Keg 2', 'pill-keg2'));
 
   if (beer.dark)                      badgeRow.appendChild(makePill('Dark', 'pill-dark'));
+  if (beer.bonus)                     badgeRow.appendChild(makePill('Bonus Keg', 'pill-bonus'));
   if (beer.t.includes('gf'))          badgeRow.appendChild(makePill('GF', 'pill-gf'));
   if (beer.t.includes('af'))          badgeRow.appendChild(makePill('AF', 'pill-af'));
   if (beer.t.includes('cask'))        badgeRow.appendChild(makePill('Cask', 'pill-cask'));
   if (beer.t.includes('wild') || /foeder|barrel|saison/.test(beer.s.toLowerCase()))
-    badgeRow.appendChild(makePill('Wild/Foeder', 'pill-wild'));
+    badgeRow.appendChild(makePill('Sour', 'pill-wild'));
   if (beer.t.includes('nolow') && !beer.t.includes('af'))
     badgeRow.appendChild(makePill('No/Low', 'pill-nolow'));
   if (beer.collab || beer.co)         badgeRow.appendChild(makePill('Collab', 'pill-collab'));
@@ -1067,23 +1077,25 @@ const TIER_PRICES = {
 };
 
 const BEER_TIERS = {
-  'Truck':'C', 'Deep Fried':'C', 'Dripping Pitch':'B', 'Citra Fog Fresh':'B',
-  'Nexus':'C', 'Vatted Fruited Saison':'A', 'Rhubarb Crumble':'B',
-  'Steady Rolling Man':'C', 'Ree-Oh-Ja':'B', 'From Above':'C',
-  'Affogato':'A', 'On The Green':'A', 'Into The Ever Haze':'A',
-  'Sunrise':'B', 'Pacific Rise':'A', 'Biere De Damson':'A',
-  'Headstone':'A', 'Still Returning':'A',
-  'Camberwell':'C', 'Strataberry Fields':'C', 'Fold + Fly':'B',
-  'Shine #2':'C', 'Shine #1':'C', 'Sorbetto':'C', 'Doses':'C',
-  'Déšť':'C', 'Running Porter':'C', 'Peach + Apricot Weisse':'C',
-  'Head Full of Drought':'C', 'Pine':'C', 'Gradients':'C',
-  '300 Laps of Your Garden':'C', 'Infamous Fable':'C', 'Geoff':'C',
-  'White Grape':'B', 'Factotum':'C', "Rockin' Chairs":'C',
-  'Pale Fire':'C', 'Santiago':'C', 'Vanity Metrics':'C',
-  'Turtles All The Way Down':'C', 'Good Times':'C', 'Adventure Defender':'C',
-  'Slurp!':'C', 'Bonsai 2026':'C', 'Ebb + Flow':'C', 'Tickle Cider':'C',
-  'Another Day Done':'C', 'Snapshot':'C', 'Sweeping Coast':'C',
-  "Cuttin' Grass":'C',
+  // A — Third £2 · Half £3.50 · Pint £6
+  'Truck':'A','Deep Fried':'A','Doses':'A','Shine #2':'A','Sorbetto':'A',
+  'Déšť':'A','Nexus':'A','Running Porter':'A','Peach + Apricot Weisse':'A',
+  'Head Full of Drought':'A','Pine':'A','Gradients':'A','300 Laps of Your Garden':'A',
+  'Camberwell':'A','Shine #1':'A','Strataberry Fields':'A','Geoff':'A',
+  'Infamous Fable':'A','Steady Rolling Man':'A','Factotum':'A',"Rockin' Chairs":'A',
+  'Pale Fire':'A','From Above':'A','Santiago':'A','Vanity Metrics':'A',
+  'Turtles All The Way Down':'A','Good Times':'A','Adventure Defender':'A',
+  'Slurp!':'A','Bonsai 2026':'A','Ebb + Flow':'A','Tickle Cider':'A',
+  'Another Day Done':'A','Snapshot':'A','Sweeping Coast':'A',"Cuttin' Grass":'A',
+  'Fresh AF':'A','Vatted Fruited Saison':'A','Lignee Blackberry':'A',
+  // B — Third £2.50 · Half £4 · Pint £7.50
+  'Dripping Pitch':'B','Citra Fog Fresh':'B','Rhubarb Crumble':'B',
+  'Fold + Fly':'B','Sunrise':'B','White Grape':'B','Ree-Oh-Ja':'B',
+  // C — Third £3 · Half £5 · Pint £9
+  'Affogato':'C','On The Green':'C','Into The Ever Haze':'C',
+  'Headstone':'C','Still Returning':'C','Pacific Rise':'C','Biere De Damson':'C',
+  // Bonus kegs
+  'Pathfinder':'A','Goatfell':'A','Board Games':'A','Glow':'D','The Gambler':'D',
   'Trampoline':'D', 'Charm':'D', "Let's Cask":'D', 'Strata':'D',
   'Fresh AF':'A',
 };
@@ -1177,9 +1189,11 @@ function renderBeerList() {
         barsEl.textContent = item.bars.map(barAbbr).join(' · ');
         left.appendChild(barsEl);
       }
-      if (item.diet && item.diet.length > 0 || item.note || item.co) {
+      if (item.diet && item.diet.length > 0 || item.note || item.co || item.dark || item.sour) {
         const meta = document.createElement('div');
         meta.className = 'wo-item-meta';
+        if (item.dark) { const p = document.createElement('span'); p.className='wo-diet-pill'; p.style.cssText='background:rgba(180,100,40,0.15);color:#d4956a;border:1px solid rgba(180,100,40,0.3);border-radius:10px;padding:2px 7px;font-size:0.65rem;font-weight:600'; p.textContent='Dark'; meta.appendChild(p); }
+        if (item.sour) { const p = document.createElement('span'); p.className='wo-diet-pill pill-wild'; p.textContent='Sour'; meta.appendChild(p); }
         if (item.diet) {
           item.diet.forEach(d => {
             if (d === 'af') return;
