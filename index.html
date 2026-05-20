@@ -619,11 +619,10 @@ const SECTIONS = [
     bars: ['Taproom Bar', 'Horsebox'],
     food: true,
     items: [
-      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',            p: '£6',    diet: ['vg','lf'],      adj: 'Tropical Juicy',        award: true, bars: ['Taproom Bar','Horsebox'] },
+      { n: 'Turtles All The Way Down 440ml — 5.5% IPA',            p: '£5.50', diet: ['vg','lf'],      adj: 'Tropical Juicy',        award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Good Times 440ml — 4.2% American Light Lager',          p: '£4.25', diet: ['vg','gf','lf'], adj: 'Crisp Sweet',            award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Snapshot 440ml — 4.5% Session IPA',                     p: '£5',    diet: ['vg','lf'],      adj: 'Mango Peach',                         bars: ['Taproom Bar','Horsebox'] },
       { n: 'Another Day Done 440ml — 4.4% Juicy Pale',              p: '£5',    diet: ['vg','lf'],      adj: 'Juicy Mango',                          bars: ['Taproom Bar','Horsebox'] },
-      { n: 'Adventure Defender 440ml — 4.5% Session IPA',           p: '£5',    diet: ['vg','lf'],      adj: 'Tropical Zesty',                       bars: ['Taproom Bar','Horsebox'] },
       { n: 'Bet The Farm 440ml — 4.5% Continental Pale',            p: '£4.50', diet: ['vg','lf'],      adj: 'Crisp Dry',             award: true, bars: ['Taproom Bar','Horsebox'] },
       { n: 'Board Games 440ml — 3.4% Pale Ale',                     p: '£4',    diet: ['vg','lf'],      adj: 'Grapefruit · Honey',                   bars: ['Taproom Bar','Horsebox'] },
       { n: 'Bonsai 2026 440ml — 4.8% Hazy Pale',                    p: '£5',    diet: ['vg','lf'],      adj: 'Papaya Pine',                          bars: ['Taproom Bar','Horsebox'] },
@@ -647,27 +646,29 @@ const SECTIONS = [
     bars: ['Horsebox', 'Taproom Bar'],
     food: true,
     items: [
-      { n: 'Red / White / Rosé', p: '175ml £6 · 250ml £7.80 · Bottle £24', diet: ['vg','gf'] },
-      { n: 'Prosecco',           p: 'Glass £7.50 · Bottle £22',            diet: ['vg','gf'] },
+      { n: 'Red / White / Rosé', p: '175ml £6 · 250ml £7.80 · Bottle £24', diet: ['vg','gf'], bars: ['Horsebox'] },
+      { n: 'Prosecco',           p: 'Glass £7.50 · Bottle £22',            diet: ['vg','gf'], bars: ['Horsebox'] },
+      { n: 'Red / White / Rosé 250ml', p: '£7.80',                         diet: ['vg','gf'], bars: ['Taproom Bar'] },
+      { n: 'Prosecco 200ml',           p: '£7.50',                         diet: ['vg','gf'], bars: ['Taproom Bar'] },
     ]
   },
   {
     id: 'softs', icon: '🥤', title: 'Soft Drinks',
-    bars: ['Taproom Bar', 'Horsebox'],
+    bars: ['Farmers Bar', 'Taproom Bar', 'Horsebox'],
     food: true,
     items: [
-      { n: 'Highland Spring Water 500ml',          p: '£1.50',          diet: ['vg','gf','af'], note: 'incl. Farmers Bar', bars: ['Farmers Bar', 'Horsebox', 'Taproom Bar'] },
-      { n: 'San Pellegrino Sparkling Water 500ml', p: '£1.95',          diet: ['vg','gf','af'] },
-      { n: 'Strawberry Milk 200ml / Bottomless',   p: '£2.50 / £8/day', diet: ['v', 'gf','af'] },
-      { n: 'Chocolate Milk 200ml / Bottomless',    p: '£2.50 / £8/day', diet: ['v', 'gf','af'] },
-      { n: 'Drove Orchard Apple Juice 330ml',      p: '£2.95',          diet: ['vg','gf','af'] },
-      { n: 'Norfolk Blueberry Juicy 330ml',        p: '£4',             diet: ['vg','gf','af'] },
-      { n: 'Traditional Lemonade 330ml',           p: '£3',             diet: ['vg','gf','af'] },
-      { n: 'Lime + Cucumber 330ml',                p: '£3',             diet: ['vg','gf','af'] },
-      { n: 'Karma Kola 200ml',                     p: '£3',             diet: ['vg','gf','af'] },
-      { n: 'Lemony 200ml',                         p: '£3',             diet: ['vg','gf','af'] },
-      { n: 'Razza Lemonade 200ml',                 p: '£3',             diet: ['vg','gf','af'] },
-      { n: 'Gingerella 200ml',                     p: '£3',             diet: ['vg','gf','af'] },
+      { n: 'Highland Spring Water 500ml',          p: '£1.50',          diet: ['vg','gf','af'], bars: ['Farmers Bar', 'Horsebox', 'Taproom Bar'] },
+      { n: 'San Pellegrino Sparkling Water 500ml', p: '£1.95',          diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Strawberry Milk 200ml / Bottomless',   p: '£2.50 / £8/day', diet: ['v', 'gf','af'], bars: ['Horsebox'] },
+      { n: 'Chocolate Milk 200ml / Bottomless',    p: '£2.50 / £8/day', diet: ['v', 'gf','af'], bars: ['Horsebox'] },
+      { n: 'Drove Orchard Apple Juice 330ml',      p: '£2.95',          diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Norfolk Blueberry Juicy 330ml',        p: '£4',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Traditional Lemonade 330ml',           p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Lime + Cucumber 330ml',                p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Karma Kola 200ml',                     p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Lemony 200ml',                         p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Razza Lemonade 200ml',                 p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Gingerella 200ml',                     p: '£3',             diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
     ]
   },
   {
@@ -677,9 +678,9 @@ const SECTIONS = [
     items: [
       { n: 'Vanilla',        p: '£3', diet: ['v','gf'] },
       { n: 'Salted Caramel', p: '£3', diet: ['v','gf'] },
-      { n: 'Chocolate',      p: '£3', diet: ['vg','gf'] },
-      { n: 'Strawberry',     p: '£3', diet: ['vg','gf'] },
-      { n: 'Mango Sorbet',   p: '£3', diet: ['vg','gf'] },
+      { n: 'Chocolate',      p: '£3', diet: ['vg','gf','lf'] },
+      { n: 'Strawberry',     p: '£3', diet: ['vg','gf','lf'] },
+      { n: 'Mango Sorbet',   p: '£3', diet: ['vg','gf','lf'] },
     ]
   },
   {
@@ -689,7 +690,7 @@ const SECTIONS = [
     items: [
       { n: 'Mini Cheddars',                         p: '£1',    diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Kettle Crisps',                         p: '£1.50', diet: ['vg','gf','af'],    note: 'VG + V options', bars: ['Farmers Bar', 'Horsebox', 'Taproom Bar'] },
-      { n: "Nobby's Nuts",                          p: '£2',    diet: ['v','af','lf'] },
+      { n: "Nobby's Nuts",                          p: '£2',    diet: ['v','af','lf'],     bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Scampi Fries',                          p: '£2',    diet: ['af'],              bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Corn Scratchings',                      p: '£2',    diet: ['vg','gf','af'],    bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Vegetable Samosa',                      p: '£2.50', diet: ['vg','af'],         bars: ['Farmers Bar', 'Horsebox', 'Taproom Bar'] },
@@ -697,12 +698,11 @@ const SECTIONS = [
       { n: 'Snackalami',                            p: '£3',    diet: ['gf','af'],         bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Snacking Cheese',                       p: '£3',    diet: ['v','gf','af'],     bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Kitkat',                                p: '£1.20', diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
-      { n: 'Mars Bar',                              p: '£1.20', diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
-      { n: 'Snickers',                              p: '£1.20', diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Mars Bar Duo',                          p: '£1.20', diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
+      { n: 'Snickers Duo',                          p: '£1.20', diet: ['v','af'],          bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Riverbank Flapjack',                    p: '£1.60', diet: ['vg','af'],         bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Sweet Smiles Norfolk Pick + Mix',       p: '£3.50', diet: ['vg','gf','lf','af'], bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Sweet Smiles Norfolk Fried Eggs',       p: '£2',    diet: ['vg','gf','lf','af'], bars: ['Horsebox', 'Taproom Bar'] },
-      { n: 'Sweet Smiles Norfolk Fizzy Watermelon', p: '£2',    diet: ['vg','gf','lf','af'], bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Sweet Smiles Norfolk Giant Strawberries', p: '£2',  diet: ['vg','gf','lf','af'], bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Mr Norfolk Kettlecorn (Salt + Sweet, Caramel)', p: '£4', diet: ['vg','gf','af'], bars: ['Horsebox', 'Taproom Bar'] },
       { n: 'Gnaw Chocolate',                        p: '£4',    diet: ['vg','gf','af'],    bars: ['Horsebox', 'Taproom Bar'] },
@@ -713,6 +713,7 @@ const SECTIONS = [
     bars: ['Farmers Bar', 'Taproom Bar'],
     food: false,
     items: [
+      { n: '🎟️ Raffle Tickets',                  p: '£5 / 3 for £10', note: 'Daily draws · Big draw worth £150 Mon 4pm' },
       { n: 'Stickers',                           p: 'Free' },
       { n: 'Notebook, Beer Designs',             p: '£2 / 3 for £5' },
       { n: 'Slurp! 4pk Festival Exclusive',      p: '£15' },
@@ -724,8 +725,7 @@ const SECTIONS = [
       { n: 'Slurp! Cap',                         p: '£25' },
       { n: 'Starburst Cap',                      p: '£25' },
       { n: 'Hop Patch Cap',                      p: '£25' },
-      { n: 'Hop + 2026 Breweries Sweater',                              p: '£30' },
-      { n: '🎟️ Raffle Tickets — daily draws + big draw Monday 4pm',    p: '£5 / 3 for £10' },
+      { n: 'Hop + 2026 Breweries Sweater',       p: '£30' },
     ]
   },
 ];
@@ -780,6 +780,7 @@ const STYLE_CHIPS = [
   { label: 'Dark',        value: 'dark' },
   { label: 'Sour',        value: 'wild-sour' },
   { label: 'Cider',       value: 'cider' },
+  { label: 'Bonus',       value: 'bonus' },
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -835,6 +836,8 @@ function beerPassesFilters(beer) {
       if (c !== 'wild' && c !== 'sour' && !beer.t.includes('wild') && !beer.t.includes('sour')) return false;
     } else if (activeStyle === 'cask') {
       if (!beer.t.includes('cask')) return false;
+    } else if (activeStyle === 'bonus') {
+      if (!beer.bonus) return false;
     } else {
       const c = cat(beer.s, beer.t);
       if (c !== activeStyle) return false;
@@ -980,7 +983,7 @@ function makeBeerCard(beer, container) {
   const tried  = isTried(beer.id);
   card.className = 'beer-card'
     + (tried  ? ' tried-card' : listed ? ' on-list' : '')
-    + (beer.keg === 2 ? ' keg2-card' : '');
+    + (beer.keg === 2 && !beer.bonus ? ' keg2-card' : '');
 
   const info = document.createElement('div');
   info.className = 'beer-info';
@@ -1082,22 +1085,24 @@ const BEER_TIERS = {
   'Déšť':'A','Nexus':'A','Running Porter':'A','Peach + Apricot Weisse':'A',
   'Head Full of Drought':'A','Pine':'A','Gradients':'A','300 Laps of Your Garden':'A',
   'Camberwell':'A','Shine #1':'A','Strataberry Fields':'A','Geoff':'A',
-  'Infamous Fable':'A','Steady Rolling Man':'A','Factotum':'A',"Rockin' Chairs":'A',
+  'Infamous Fable':'C','Steady Rolling Man':'A','Factotum':'A',"Rockin' Chairs":'A',
   'Pale Fire':'A','From Above':'A','Santiago':'A','Vanity Metrics':'A',
   'Turtles All The Way Down':'A','Good Times':'A','Adventure Defender':'A',
   'Slurp!':'A','Bonsai 2026':'A','Ebb + Flow':'A','Tickle Cider':'A',
   'Another Day Done':'A','Snapshot':'A','Sweeping Coast':'A',"Cuttin' Grass":'A',
-  'Fresh AF':'A','Vatted Fruited Saison':'A','Lignee Blackberry':'A',
+  'Fresh AF':'C','Vatted Fruited Saison':'A','Lignee Blackberry':'C',
   // B — Third £2.50 · Half £4 · Pint £7.50
-  'Dripping Pitch':'B','Citra Fog Fresh':'B','Rhubarb Crumble':'B',
-  'Fold + Fly':'B','Sunrise':'B','White Grape':'B','Ree-Oh-Ja':'B',
+  'Citra Fog Fresh':'B','Sunrise':'B','White Grape':'B','Ree-Oh-Ja':'B',
+  // Moved to A per confirmed spreadsheet
+  'Dripping Pitch':'A','Rhubarb Crumble':'A','Fold + Fly':'A',
   // C — Third £3 · Half £5 · Pint £9
   'Affogato':'C','On The Green':'C','Into The Ever Haze':'C',
   'Headstone':'C','Still Returning':'C','Pacific Rise':'C','Biere De Damson':'C',
+  // C additions confirmed
+  'Lignee Blackberry':'C',
   // Bonus kegs
   'Pathfinder':'A','Goatfell':'A','Board Games':'A','Glow':'D','The Gambler':'D',
   'Trampoline':'D', 'Charm':'D', "Let's Cask":'D', 'Strata':'D',
-  'Fresh AF':'A',
 };
 
 function renderBeerList() {
@@ -1114,7 +1119,7 @@ function renderBeerList() {
     banner.appendChild(title);
     [
       '😃 Charity Pitch Donation £10 — Pay in Taproom 🙏',
-      '🚻 Toiletries for All in Box by Toilets — Help Yourself',
+      '🚻 Toiletries for All in Box by Toilets — Help Yourself 🧴',
       '🍺 BYOB — Flagon Fills at Farmers Bar · Cans from Taproom 🥫',
     ].forEach(text => {
       const row = document.createElement('div');
