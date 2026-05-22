@@ -884,10 +884,18 @@ function setRating(id, axis, val) {
   }
   saveState();
 }
+let _phNotesTimers = {};
 function setNotes(id, text) {
   if (!state.list[id]) return;
   state.list[id].notes = text;
   saveState();
+  clearTimeout(_phNotesTimers[id]);
+  if (text.trim().length > 3) {
+    _phNotesTimers[id] = setTimeout(() => {
+      const beer = BEERS.find(b => b.id === Number(id));
+      posthog.capture('tasting_note', { beer: beer?.n, brewery: beer?.b, note: text.trim() });
+    }, 2000);
+  }
 }
 
 // ═══════════════════════════════════════════════════════
