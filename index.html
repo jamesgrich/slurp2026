@@ -875,14 +875,20 @@ function setRating(id, axis, val) {
   state.list[id].ratings[axis] = val;
   if (val > 0 && !state.list[id].tried) {
     state.list[id].tried = true;
-    const tc = triedCount();
-    if (tc === 15) posthog.capture('run_the_board_complete',{beers_tried:tc});
+    checkRTBMilestones(triedCount() - 1);
   }
   if (val > 0) {
     const beer = BEERS.find(b => b.id === Number(id));
     posthog.capture('beer_rated',{beer:beer?.n,brewery:beer?.b,axis,rating:val,tier:beer?BEER_TIERS[beer.n]||null:null});
   }
   saveState();
+}
+function checkRTBMilestones(prev) {
+  const tc = triedCount();
+  [5, 10, 15].forEach(m => {
+    if (prev < m && tc >= m) posthog.capture('run_the_board_milestone', { milestone: m, beers_tried: tc });
+  });
+  posthog.people.set({ beers_tried: tc });
 }
 let _phNotesTimers = {};
 function setNotes(id, text) {
@@ -1055,7 +1061,7 @@ function makeBeerCard(beer, container) {
   btn.textContent = listed ? '✓' : '+';
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (!onList(beer.id)) { addToList(beer.id); toast('Added: ' + beer.n); posthog.capture('beer_added',{beer:beer.n,brewery:beer.b,bar:beer.bar,style:beer.s,abv:beer.abv,tier:BEER_TIERS[beer.n]||null}); }
+    if (!onList(beer.id)) { addToList(beer.id); toast('Added: ' + beer.n); posthog.capture('beer_added',{beer:beer.n,brewery:beer.b,bar:beer.bar,style:beer.s,abv:beer.abv,tier:BEER_TIERS[beer.n]||null}); posthog.people.set({beers_on_list:listCount()}); }
     else toast('Already on your list!', 'info');
     updateStats(); renderBeerList(); renderMyList();
   });
@@ -1590,8 +1596,7 @@ function renderMyList() {
         if (state.list[beer.id].tried) {
           toast('Marked as tried: ' + beer.n);
           posthog.capture('beer_tried',{beer:beer.n,brewery:beer.b,bar:beer.bar,style:beer.s,abv:beer.abv,tier:BEER_TIERS[beer.n]||null});
-          const tc = triedCount();
-          if (tc === 15) posthog.capture('run_the_board_complete',{beers_tried:tc});
+          checkRTBMilestones(triedCount() - 1);
         }
         updateStats(); renderBeerList(); renderMyList();
       });
@@ -1603,6 +1608,8 @@ function renderMyList() {
       removeBtn.addEventListener('click', () => {
         removeFromList(beer.id);
         toast('Removed: ' + beer.n, 'info');
+        posthog.capture('beer_removed',{beer:beer.n,brewery:beer.b,bar:beer.bar,style:beer.s,tier:BEER_TIERS[beer.n]||null});
+        posthog.people.set({beers_on_list:listCount()});
         updateStats(); renderBeerList(); renderMyList();
       });
       actions.appendChild(removeBtn);
@@ -1657,6 +1664,7 @@ function renderMyList() {
       const link = document.createElement('a');
       link.className = 'untappd-link';
       link.href = 'https://untappd.com/search?q=' + encodeURIComponent(beer.b + ' ' + beer.n);
+      link.addEventListener('click', () => posthog.capture('untappd_click',{beer:beer.n,brewery:beer.b,tier:BEER_TIERS[beer.n]||null}));
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.innerHTML = '<span>🍺</span> Search Untappd';
@@ -1797,6 +1805,21 @@ const SCROLL_HIDE_FILTERS = true;
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/slurp2026/sw.js').catch(() => {}));
 }
+
+// ── POSTHOG SUPER PROPERTIES ──────────────────────────────────────────────
+(function() {
+  const start = new Date('2026-05-22T00:00:00');
+  const diff  = Math.floor((Date.now() - start) / 86400000);
+  const day   = ['Friday','Saturday','Sunday','Monday'][diff] || null;
+  if (day) posthog.register({ festival_day: day, festival: 'Slurp! 2026' });
+  posthog.people.set({
+    festival: 'Slurp! 2026',
+    beers_on_list: listCount(),
+    beers_tried: triedCount(),
+    first_seen: new Date().toISOString(),
+  });
+})();
+// ─────────────────────────────────────────────────────────────────────────
 
 // ═══════════════════════════════════════════════════════
 // INIT
